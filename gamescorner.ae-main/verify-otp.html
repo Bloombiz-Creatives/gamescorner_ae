@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <link rel="stylesheet" href="./assets/css/forgotpassword.css">
+</head>
+<body>
+    <div class="container">
+        <div class="forgot-password-box">
+            <img src="assets/images/logo/games.png" alt="Logo" class="logo">
+            <h2 class="title">Verify OTP</h2>
+            <p class="subtitle">No worries, we'll handle it.</p>
+            <!-- OTP Verification Section -->
+            <form id="verifyOtpForm">
+                <p class="subtitle">Enter the OTP sent to your email.</p>
+                <input type="hidden" id="email" required>
+                <div class="form-group">
+                    <label for="otp" class="label">OTP</label>
+                    <input type="text" id="otp" class="input" placeholder="Enter OTP" required>
+                </div>
+                <button type="button" id="verifyOtpButton" class="submit-button">Verify OTP</button>
+                <p id="otpStatusMessage" class="status-message"></p>
+            </form>
+        </div>
+    </div>
+    <script src="assets/js/ForgotPassword.js"></script>
+</body>
+</html>
