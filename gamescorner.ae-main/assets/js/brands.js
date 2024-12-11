@@ -7,8 +7,8 @@ class BrandManager {
     this.brandsTableBody = document.getElementById("brandsTableBody");
     this.brandPrevButton = document.getElementById("brand-prev");
     this.brandNextButton = document.getElementById("brand-next");
-    this.searchInput = document.getElementById("searchInput");
-    this.searchBtn = document.getElementById("searchBtn");
+    // this.searchInput = document.getElementById("searchInput");
+    // this.searchBtn = document.getElementById("searchBtn");
     this.loadingIndicator = document.getElementById("loadingIndicator");
     this.errorMessage = document.getElementById("errorMessage");
 

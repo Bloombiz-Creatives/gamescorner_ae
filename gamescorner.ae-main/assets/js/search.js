@@ -13,6 +13,64 @@ class ProductListing {
         this.initEventListeners();
         this.fetchInitialData();
         this.parseUrlParameters();
+        this.initSearch();
+    }
+
+    initSearch() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('query');
+        const searchTags = urlParams.get('tags');
+        const searchResultsTitle = document.getElementById('searchResultsTitle');
+        
+        if (searchQuery) {
+            if (searchResultsTitle) {
+                searchResultsTitle.textContent = `Search Results for "${searchQuery}"`;
+            }
+            this.fetchSearchProducts(searchQuery);
+        }
+
+        if (searchTags) {
+            if (searchResultsTitle) {
+                searchResultsTitle.textContent = `Products with Tag: "${searchTags}"`;
+            }
+            this.fetchTagProducts(searchTags);
+        }
+    }
+
+    async fetchTagProducts(tags) {
+        try {
+            let url = new URL(this.baseUrl);
+            let params = new URLSearchParams({
+                tags: tags,
+                page: this.currentPage,
+                limit: this.productsPerPage
+            });
+
+            url.search = params.toString();
+
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.allProducts = data.products;
+                this.totalProducts = data.total || this.allProducts.length;
+                
+                this.renderProducts(this.getPaginatedProducts());
+                this.renderPagination();
+                this.renderResultsCount(tags);
+            } else {
+                this.showNoResults(tags);
+            }
+        } catch (error) {
+            console.error('Error fetching tag products:', error);
+            this.showError(tags);
+        }
     }
 
     parseUrlParameters() {
@@ -254,6 +312,7 @@ class ProductListing {
         `).join('');
     }
 
+  
     async fetchProducts() {
         try {
             const sortFilter = document.getElementById('sortFilter');
@@ -322,40 +381,18 @@ class ProductListing {
         this.fetchProducts();
     }
 
-    // sortProducts(products, sortMethod) {
-    //     switch (sortMethod) {
-    //         case 'price-low':
-    //             return [...products].sort((a, b) => this.extractPrice(a) - this.extractPrice(b));
-    //         case 'price-high':
-    //             return [...products].sort((a, b) => this.extractPrice(b) - this.extractPrice(a));
-    //         case 'featured':
-    //             return [...products].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
-    //         default:
-    //             return products;
-    //     }
-    // }
-
     sortProducts(products, sortMethod) {
         switch (sortMethod) {
             case 'price-low':
-                return [...products].sort((a, b) => {
-                    const priceA = this.extractDiscountPrice(a);
-                    const priceB = this.extractDiscountPrice(b);
-                    return priceA - priceB;
-                });
+                return [...products].sort((a, b) => this.extractPrice(a) - this.extractPrice(b));
             case 'price-high':
-                return [...products].sort((a, b) => {
-                    const priceA = this.extractDiscountPrice(a);
-                    const priceB = this.extractDiscountPrice(b);
-                    return priceB - priceA;
-                });
+                return [...products].sort((a, b) => this.extractPrice(b) - this.extractPrice(a));
             case 'featured':
                 return [...products].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
             default:
                 return products;
         }
     }
-    
 
     extractPrice(product) {
         if (product.country_pricing?.[0]?.price) {
@@ -411,14 +448,19 @@ class ProductListing {
         `;
     }
 
-    renderResultsCount() {
+    renderResultsCount(query = '') {
         const resultsCount = document.getElementById('resultsCount');
         if (!resultsCount) return;
 
         const start = (this.currentPage - 1) * this.productsPerPage + 1;
         const end = Math.min(this.currentPage * this.productsPerPage, this.totalProducts);
 
-        resultsCount.textContent = `Showing ${start}-${end} of ${this.totalProducts} results`;
+        // resultsCount.textContent = `Showing ${start}-${end} of ${this.totalProducts} results`;
+        if (query) {
+            resultsCount.textContent = `Showing ${start}-${end} of ${this.totalProducts} results for "${query}"`;
+        } else {
+            resultsCount.textContent = `Showing ${start}-${end} of ${this.totalProducts} results`;
+        }
     }
 
     getPaginatedProducts() {
@@ -469,6 +511,23 @@ class ProductListing {
         this.renderProducts(this.getPaginatedProducts());
         this.renderPagination();
         this.renderResultsCount();
+    }
+
+    getCurrentQuery() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('query') || '';
+    }
+
+    showNoResults(query) {
+        const grid = document.getElementById('productGrid');
+        if (grid) {
+            grid.innerHTML = `
+                <div class="col-span-3 text-center py-8">
+                    <h3 class="text-2xl mb-4">No results found for "${query}"</h3>
+                    <p class="text-gray-600">Please try a different search term or browse our categories.</p>
+                </div>
+            `;
+        }
     }
 
     showError(containerId) {

@@ -5,8 +5,8 @@ class ParentImageManager {
 
     // DOM Element References
     this.parentTableBody = document.getElementById("parentTableBody");
-    this.searchInput = document.getElementById("searchInput");
-    this.searchBtn = document.getElementById("searchBtn");
+    // this.searchInput = document.getElementById("searchInput");
+    // this.searchBtn = document.getElementById("searchBtn");
     this.loadingIndicator = document.getElementById("loadingIndicator");  
     this.errorMessage = document.getElementById("errorMessage");
 

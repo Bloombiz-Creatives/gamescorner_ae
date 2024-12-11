@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en" class="color-two">
+
+<!-- Mirrored from wowtheme7.com/tf/marketpro/shop.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 27 Aug 2024 06:58:28 GMT -->
 
 <head>
     <meta charset="UTF-8">
@@ -20,10 +22,6 @@
     <link rel="stylesheet" href="assets/css/jquery-ui.css">
     <!-- Main css -->
     <link rel="stylesheet" href="assets/css/main.css">
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 </head>
 
 <body>
@@ -53,34 +51,22 @@
 
     <!-- ==================== Search Box Start Here ==================== -->
     <form action="#" class="search-box">
-        <button
-          type="button"
-          class="search-box__close position-absolute inset-block-start-0 inset-inline-end-0 m-16 w-48 h-48 border border-gray-100 rounded-circle flex-center text-white hover-text-gray-800 hover-bg-white text-2xl transition-1"
-        >
-          <i class="ph ph-x"></i>
+        <button type="button"
+            class="search-box__close position-absolute inset-block-start-0 inset-inline-end-0 m-16 w-48 h-48 border border-gray-100 rounded-circle flex-center text-white hover-text-gray-800 hover-bg-white text-2xl transition-1">
+            <i class="ph ph-x"></i>
         </button>
         <div class="container">
-          <div class="position-relative">
-            <input
-              type="text"
-              id="searchInput1"
-              class="form-control py-16 px-24 text-xl rounded-pill pe-64"
-              placeholder="Search for a product"
-            />
-            <button
-              type="submit"
-              class="w-48 h-48 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8"
-            >
-              <i class="ph ph-magnifying-glass"></i>
-            </button>
-            <div
-              id="searchResults1"
-              class="dropdown-menu position-absolute w-100"
-              style="display: none"
-            ></div>
-          </div>
+            <div class="position-relative">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="form-control py-16 px-24 text-xl rounded-pill" 
+                    placeholder="Search for a product or brand"
+                >
+                <div id="searchResults" class="dropdown-menu position-absolute w-100" style="display: none;"></div>
+            </div>
         </div>
-      </form>
+    </form>
     <!-- ==================== Search Box End Here ==================== -->
 
     <!-- ==================== Mobile Menu Start Here ==================== -->
@@ -93,7 +79,6 @@
             <div class="mobile-menu__menu">
                 <!-- Nav Menu Start -->
                 <ul class="nav-menu flex-align nav-menu--mobile">
-
                     <li class="nav-menu__item">
                         <a href="index.html" class="nav-menu__link">Home</a>
                     </li>
@@ -109,8 +94,6 @@
                     <li class="nav-menu__item">
                         <a href="assemble.html" class="nav-menu__link">Assemble</a>
                     </li>
-
-
                 </ul>
                 <!-- Nav Menu End -->
             </div>
@@ -153,6 +136,7 @@
                         </ul>
                     </li>
 
+
                     <li class="border-right-item account">
                         <a href="account.html" class="text-white text-sm py-8 flex-align gap-6">
                             <span class="icon text-md d-flex"> <i class="ph ph-user-circle"></i> </span>
@@ -179,20 +163,19 @@
 
                 <!-- form location Start -->
                 <form action="#" class="flex-align flex-wrap form-location-wrapper">
-                    <div class="search-category d-flex h-48 select-border-end-0 radius-end-0 search-form d-sm-flex d-none">
+                    <div
+                        class="search-category d-flex h-48 select-border-end-0 radius-end-0 search-form d-sm-flex d-none">
+
                         <div class="search-form__wrapper position-relative">
-                            <input 
-                                type="text"
-                                id="searchInput2"
+                            <input type="text"
                                 class="search-form__input common-input py-13 ps-16 pe-18 rounded-end-pill pe-44"
-                                placeholder="Search for a product ">
+                                placeholder="Search for a product or brand">
                             <button type="submit"
-                                class="w-32 h-32 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8">
-                                <i class="ph ph-magnifying-glass"></i>
-                            </button>
-                            <div id="searchResults2" class="dropdown-menu position-absolute w-100" style="display: none;"></div>
+                                class="w-32 h-32 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8"><i
+                                    class="ph ph-magnifying-glass"></i></button>
                         </div>
                     </div>
+
                 </form>
                 <!-- form location start -->
 
@@ -204,7 +187,7 @@
                                 <i class="ph ph-magnifying-glass"></i>
                             </span>
                         </button>
-                        <a href="wishlist.html" class="flex-align gap-4 item-hover">
+                        <a href="cart.html" class="flex-align gap-4 item-hover">
                             <span class="text-2xl text-gray-700 d-flex position-relative me-6 mt-6 item-hover__text">
                                 <i class="ph ph-heart"></i>
                                 <span
@@ -264,6 +247,7 @@
                             <div id="errorMessage" class="text-red-500 text-center"></div>
                         </div>
                     </div>
+
                     <!-- Category Dropdown End  -->
 
                     <!-- Menu Start  -->
@@ -283,7 +267,6 @@
                             <li class="nav-menu__item">
                                 <a href="contact.html" class="nav-menu__link">Contact Us</a>
                             </li>
-
 
                         </ul>
                         <!-- Nav Menu End -->
@@ -325,7 +308,7 @@
             <span>Home</span>
         </a>
 
-        <a href="wishlist.html" class="nav-item position-relative" aria-label="Wishlist">
+        <a href="shop.html" class="nav-item position-relative" aria-label="Wishlist">
             <i class="ph ph-heart"></i>
             <span>wishlist</span>
             <!-- Wishlist Notification Badge -->
@@ -333,7 +316,7 @@
                 class="notification-badge position-absolute top-n6 end-n4 bg-main-600 text-white rounded-circle text-xs flex-center wishlist">5</span>
         </a>
 
-        <a href="cart.html" class="nav-item position-relative" aria-label="Cart">
+        <a href="shop.html" class="nav-item position-relative" aria-label="Cart">
             <i class="ph ph-shopping-cart-simple"></i>
             <span>Cart</span>
             <!-- Cart Notification Badge -->
@@ -349,432 +332,119 @@
     <!-- ==================== Header End Here ==================== -->
 
     <!-- ========================= Breadcrumb Start =============================== -->
-    <div class="breadcrumb py-26 bg-color-one">
+    <div class="breadcrumb py-26 bg-main-two-50">
         <div class="container container-lg">
             <div class="breadcrumb-wrapper flex-between flex-wrap gap-16">
-                <h6 class="mb-0">Shop Details</h6>
+                <h6 class="mb-0">Shop</h6>
                 <ul class="flex-align gap-8 flex-wrap">
                     <li class="text-sm">
-                        <a href="index.html" class="text-main-600 flex-align gap-8">
+                        <a href="index.html" class="text-gray-900 flex-align gap-8 hover-text-main-600">
                             <i class="ph ph-house"></i>
                             Home
                         </a>
                     </li>
-                    <li class="flex-align text-gray-500">
+                    <li class="flex-align">
                         <i class="ph ph-caret-right"></i>
                     </li>
-                    <li class="text-sm">
-                        <a href="shop.html" class="text-main-600 flex-align gap-8">
-                            Shop
-                        </a>
-                    </li>
-                    <li class="flex-align text-gray-500">
-                        <i class="ph ph-caret-right"></i>
-                    </li>
-                    <li class="text-sm">
-                        <a href="#" class="text-main-600 flex-align gap-8">
-                            Shop Grid
-                        </a>
-                    </li>
-                    <li class="flex-align text-gray-500">
-                        <i class="ph ph-caret-right"></i>
-                    </li>
-                    <li class="text-sm text-neutral-600" id="product-name">
-                    </li>
+                    <li class="text-sm text-main-600"> Product Shop </li>
                 </ul>
             </div>
         </div>
     </div>
     <!-- ========================= Breadcrumb End =============================== -->
 
-    <section class="product-details py-80">
+    <!-- =============================== Shop Section Start ======================================== -->
+    <section class="shop py-80">
         <div class="container container-lg">
-            <div class="row gy-4">
-                <div class="col-lg-9">
-                    <div class="row gy-4">
-                        <div class="col-xl-6">
-                            <div class="product-details__left">
-                                <div class="product-details__thumb-slider border border-gray-100 rounded-16">
-                                    <div class="">
-                                    </div>
-                                </div>
-                                <div class="mt-24">
-                                    <div class="product-details__images-slider">
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-xl-6">
-                            <div class="product-details__content">
-                                <h5 class="mb-12"></h5>
-                                <div class="flex-align flex-wrap gap-12">
-                                    <div class="flex-align gap-12 flex-wrap">
-                                        <div class="flex-align gap-8">
-                                            <span class="text-15 fw-medium text-warning-600 d-flex"><i
-                                                    class="ph-fill ph-star"></i></span>
-                                            <span class="text-15 fw-medium text-warning-600 d-flex"><i
-                                                    class="ph-fill ph-star"></i></span>
-                                            <span class="text-15 fw-medium text-warning-600 d-flex"><i
-                                                    class="ph-fill ph-star"></i></span>
-                                            <span class="text-15 fw-medium text-warning-600 d-flex"><i
-                                                    class="ph-fill ph-star"></i></span>
-                                            <span class="text-15 fw-medium text-warning-600 d-flex"><i
-                                                    class="ph-fill ph-star"></i></span>
-                                        </div>
-                                        <span class="text-sm fw-medium text-neutral-600"></span>
-                                    </div>
-
-                                </div>
-                                <span class="mt-32 pt-32 text-gray-700 border-top border-gray-100 d-block"></span>
-                                <p class="text-gray-700"></p>
-
-                                <div class="mt-32 flex-align flex-wrap gap-32">
-                                    <div class="flex-align gap-8">
-                                        <h4 class="mb-0"></h4>
-                                        <span class="text-md text-gray-500"></span>
-                                    </div>
-                                    <a href="#" class="btn btn-main rounded-pill" id="whatsapp-order">Order on
-                                        What'sApp</a>
-                                </div>
-
-                                <div class="mb-24">
-                                    <div class="mt-32 flex-align gap-12 mb-16">
-                                        <span
-                                            class="w-32 h-32 bg-white flex-center rounded-circle text-main-600 box-shadow-xl"><i
-                                                class="ph-fill ph-lightning"></i></span>
-                                        <h6 class="text-md mb-0 fw-bold text-gray-900">Products are almost sold out</h6>
-                                    </div>
-                                    <div class="progress w-100 bg-gray-100 rounded-pill h-8" role="progressbar"
-                                        aria-label="Basic example" aria-valuenow="32" aria-valuemin="0"
-                                        aria-valuemax="100">
-                                        <div class="progress-bar bg-main-two-600 rounded-pill" style="width: 32%"></div>
-                                    </div>
-                                    <span class="text-sm text-gray-700 mt-8">Available only:</span>
-                                </div>
-
-                                <div class="flex-between align-items-start flex-wrap gap-16">
-                                    <div>
-                                        <span class="text-gray-900 d-block mb-12">
-                                            Color: 
-                                            <span class="fw-medium">Mineral Silver</span> 
-                                        </span>
-                                        <div class="color-list flex-align gap-8">
-                                            <button type="button" class="color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle bg-info-600"></button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <span class="text-gray-900 d-block mb-8">Quantity:</span>
-
-                                <div class="flex-between gap-16 flex-wrap">
-                                    <div class="flex-align flex-wrap gap-16">
-                                        <div class="border border-gray-100 rounded-pill py-9 px-16 flex-align">
-                                            <button type="button"
-                                                class="quantity__minus p-4 text-gray-700 hover-text-main-600 flex-center"><i
-                                                    class="ph ph-minus"></i></button>
-                                            <input type="number" class="quantity__input border-0 text-center w-32"
-                                                value="1">
-                                            <button type="button"
-                                                class="quantity__plus p-4 text-gray-700 hover-text-main-600 flex-center"><i
-                                                    class="ph ph-plus"></i></button>
-                                        </div>
-                                        <a href="" class="btn btn-main rounded-pill flex-align d-inline-flex gap-8 px-48 add-to-cart-btn"
-                                        data-product-id="{{ product.id }}"
-                                        data-product-currencycode="{{ product.currencyCode }}"
-                                        data-product-quantity="{{ product.quantity }}"
-                                        data-product-price="{{ product.price }}"
-                                        data-product-discount="{{ product.discount }}">
-                                        <i class="ph ph-shopping-cart"></i> Add To Cart
-                                        </a>
-                                    </div>
-
-                                    <div class="flex-align gap-12">
-                                        <a href="#"
-                                            class="w-52 h-52 bg-main-50 text-main-600 text-xl hover-bg-main-600 hover-text-white flex-center rounded-circle">
-                                            <i class="ph ph-heart"></i>
-                                        </a>
-                                        <a href="#"
-                                            class="w-52 h-52 bg-main-50 text-main-600 text-xl hover-bg-main-600 hover-text-white flex-center rounded-circle"
-                                            id="whatsapp">
-                                            <i class="ph ph-whatsapp-logo text-2xl"></i>
-                                        </a>
-                                        <a href="#"
-                                            class="w-52 h-52 bg-main-50 text-main-600 text-xl hover-bg-main-600 hover-text-white flex-center rounded-circle"
-                                            id="facebook">
-                                            <i class="ph ph-facebook-logo text-2xl"></i>
-                                        </a>
-                                    </div>
-
-                                </div>
-                                <div class="mt-9">
-                                    <a href=""
-                                        class=" btn  bg-gray-50 text-heading hover-bg-main-600 hover-text-white py-11 px-24  rounded-pill flex-align flex-center gap-8 fw-medium"
-                                        tabindex="0" data-product-id="${product._id}" data-product-price="${price}"
-                                        data-product-discount="${discount}" data-product-currencycode="${currencyCode}"
-                                        data-product-quantity="1">
-                                        Order Now <i class="ph ph-receipt text-xl"></i>
-                                    </a>
-                                </div>
-                                <span class="mt-32 pt-32 text-gray-700 border-top border-gray-100 d-block"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="row">
                 <div class="col-lg-3">
-                    <div class="product-details__sidebar border border-gray-100 rounded-16 overflow-hidden">
-                        <div class="p-24">
-                            <div class="flex-between bg-main-600 rounded-pill p-8">
-                                <div class="flex-align gap-8">
-                                    <span class="w-44 h-44 bg-white rounded-circle flex-center text-2xl"><i
-                                            class="ph ph-storefront"></i></span>
-                                    <span class="text-white">by G-corner</span>
-                                </div>
-                                <a href="shop.html" class="btn btn-white rounded-pill text-uppercase">View Store</a>
-                            </div>
+                    <div class="shop-sidebar">
+                        <button type="button"
+                            class="shop-sidebar__close d-lg-none d-flex w-32 h-32 flex-center border border-gray-100 rounded-circle hover-bg-main-600 position-absolute inset-inline-end-0 me-10 mt-8 hover-text-white hover-border-main-600">
+                            <i class="ph ph-x"></i>
+                        </button>
+
+                        <div class="shop-sidebar__box border border-gray-100 rounded-8 p-32 mb-32">
+                            <h6 class="text-xl border-bottom border-gray-100 pb-24 mb-24">Product Sub Category</h6>
+                            <ul class="max-h-540 overflow-y-auto scroll-sm" id="categoryList">
+                            </ul>
                         </div>
-                        <div class="p-24 bg-color-one d-flex align-items-start gap-24 border-bottom border-gray-100">
-                            <span
-                                class="w-44 h-44 bg-white text-main-600 rounded-circle flex-center text-2xl flex-shrink-0">
-                                <i class="ph-fill ph-truck"></i>
-                            </span>
-                            <div class="">
-                                <h6 class="text-sm mb-8">Fast Delivery</h6>
-                                <p class="text-gray-700">Lightning-fast shipping, guaranteed.</p>
-                            </div>
+
+                        <div class="shop-sidebar__box border border-gray-100 rounded-8 p-32 mb-32">
+                            <h6 class="text-xl border-bottom border-gray-100 pb-24 mb-24">Filter by Category</h6>
+                            <ul class="max-h-540 overflow-y-auto scroll-sm" id="parentcat_list">
+                            </ul>
                         </div>
-                        <div class="p-24 bg-color-one d-flex align-items-start gap-24 border-bottom border-gray-100">
-                            <span
-                                class="w-44 h-44 bg-white text-main-600 rounded-circle flex-center text-2xl flex-shrink-0">
-                                <i class="ph-fill ph-arrow-u-up-left"></i>
-                            </span>
-                            <div class="">
-                                <h6 class="text-sm mb-8">Free 90-day returns</h6>
-                                <p class="text-gray-700">Shop risk-free with easy returns.</p>
-                            </div>
+
+                        <div class="shop-sidebar__box border border-gray-100 rounded-8 p-32 mb-32">
+                            <h6 class="text-xl border-bottom border-gray-100 pb-24 mb-24">Filter by Brand</h6>
+                            <ul class="max-h-540 overflow-y-auto scroll-sm" id="brandList">
+                            </ul>
                         </div>
-                        <div class="p-24 bg-color-one d-flex align-items-start gap-24 border-bottom border-gray-100">
-                            <span
-                                class="w-44 h-44 bg-white text-main-600 rounded-circle flex-center text-2xl flex-shrink-0">
-                                <i class="ph-fill ph-check-circle"></i>
-                            </span>
-                            <div class="">
-                                <h6 class="text-sm mb-8">Pickup available at Shop location</h6>
-                                <p class="text-gray-700">Usually ready in 24 hours</p>
-                            </div>
+
+                        <!-- clear button -->
+                        <div class="product-card__cart p-32 mb-32 btn bg-gray-50 text-heading hover-bg-main-600 hover-text-white py-11 px-24 rounded-8 flex-center gap-8 fw-medium"
+                            id="clearFilterBtn">
+                            <i class="ph ph-trash"></i><span>clear filter</span>
                         </div>
-                        <div class="p-24 bg-color-one d-flex align-items-start gap-24 border-bottom border-gray-100">
-                            <span
-                                class="w-44 h-44 bg-white text-main-600 rounded-circle flex-center text-2xl flex-shrink-0">
-                                <i class="ph-fill ph-credit-card"></i>
-                            </span>
-                            <div class="">
-                                <h6 class="text-sm mb-8">Payment</h6>
-                                <p class="text-gray-700">Payment upon receipt of goods, Payment by card in the
-                                    department, Google Pay, Online card.</p>
-                            </div>
-                        </div>
-                        <div class="p-24 bg-color-one d-flex align-items-start gap-24 border-bottom border-gray-100">
-                            <span
-                                class="w-44 h-44 bg-white text-main-600 rounded-circle flex-center text-2xl flex-shrink-0">
-                                <i class="ph-fill ph-check-circle"></i>
-                            </span>
-                            <div class="">
-                                <h6 class="text-sm mb-8">Warranty</h6>
-                                <p class="text-gray-700">The Consumer Protection Act does not provide for the return of
-                                    this product of proper quality.</p>
-                            </div>
-                        </div>
-                        <div class="p-24 bg-color-one d-flex align-items-start gap-24 border-bottom border-gray-100">
-                            <span
-                                class="w-44 h-44 bg-white text-main-600 rounded-circle flex-center text-2xl flex-shrink-0">
-                                <i class="ph-fill ph-package"></i>
-                            </span>
-                            <div class="">
-                                <h6 class="text-sm mb-8">Packaging</h6>
-                                <p class="text-gray-700">Research & development value proposition graphical user
-                                    interface investor.</p>
-                            </div>
+
+
+                        <div class="shop-sidebar__box rounded-8">
+                            <img src="assets/images/thumbs/advertise-img1.png" alt="">
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="pt-80">
-                <div class="product-dContent border rounded-24">
-                    <div class="product-dContent__header border-bottom border-gray-100 flex-between flex-wrap gap-16">
-                        <ul class="nav common-tab nav-pills mb-3" id="pills-tab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="pills-description-tab" data-bs-toggle="pill"
-                                    data-bs-target="#pills-description" type="button" role="tab"
-                                    aria-controls="pills-description" aria-selected="true">Description</button>
-                            </li>
-                        </ul>
-                        <a href="#"
-                            class="btn bg-color-one rounded-16 flex-align gap-8 text-main-600 hover-bg-main-600 hover-text-white">
-                            <img src="assets/images/icon/satisfaction-icon.png" alt="">
-                            100% Satisfaction Guaranteed
-                        </a>
-                    </div>
-                    <div class="product-dContent__box">
-                        <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade show active" id="pills-description" role="tabpanel"
-                                aria-labelledby="pills-description-tab" tabindex="0">
-                                <div class="mb-40">
-                                    <h6 class="mb-24">Product Description</h6>
-                                    <p id="productdescription"> </p>
-                                </div>
-                                <div class="mb-40">
-                                    <h6 class="mb-24">Product Specifications</h6>
-                                    <ul class="mt-32">
-                                        <li class="text-gray-400 mb-14 flex-align gap-14">
-                                            <span
-                                                class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                                                <i class="ph ph-check"></i>
-                                            </span>
-                                            <span class="text-heading fw-medium">
-                                                Product Type:
-                                                <span class="text-gray-500"> Chips & Dips</span>
-                                            </span>
-                                        </li>
-                                        <li class="text-gray-400 mb-14 flex-align gap-14">
-                                            <span
-                                                class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                                                <i class="ph ph-check"></i>
-                                            </span>
-                                            <span class="text-heading fw-medium">
-                                                Product Name:
-                                                <span class="text-gray-500"> Potato Chips Classic </span>
-                                            </span>
-                                        </li>
-                                        <li class="text-gray-400 mb-14 flex-align gap-14">
-                                            <span
-                                                class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                                                <i class="ph ph-check"></i>
-                                            </span>
-                                            <span class="text-heading fw-medium">
-                                                Brand:
-                                                <span class="text-gray-500"> Lay's</span>
-                                            </span>
-                                        </li>
-                                        <li class="text-gray-400 mb-14 flex-align gap-14">
-                                            <span
-                                                class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                                                <i class="ph ph-check"></i>
-                                            </span>
-                                            <span class="text-heading fw-medium">
-                                                category:
-                                                <span class="text-gray-500"> chips</span>
-                                            </span>
-                                        </li>
-                                        <li class="text-gray-400 mb-14 flex-align gap-14">
-                                            <span
-                                                class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                                                <i class="ph ph-check"></i>
-                                            </span>
-                                            <span class="text-heading fw-medium">
-                                                unit:
-                                                <span class="text-gray-500"> No</span>
-                                            </span>
-                                        </li>
-                                        <li class="text-gray-400 mb-14 flex-align gap-14">
-                                            <span
-                                                class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                                                <i class="ph ph-check"></i>
-                                            </span>
-                                            <span class="text-heading fw-medium">
-                                                weight:
-                                                <span class="text-gray-500"> No</span>
-                                            </span>
-                                        </li>
-                                        <li class="text-gray-400 mb-14 flex-align gap-14">
-                                            <span
-                                                class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                                                <i class="ph ph-check"></i>
-                                            </span>
-                                            <span class="text-heading fw-medium">
-                                                attribute:
-                                                <span class="text-gray-500">attribute and value</span>
-                                            </span>
-                                        </li>
-                                        <li class="text-gray-400 mb-14 flex-align gap-14">
-                                            <span
-                                                class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                                                <i class="ph ph-check"></i>
-                                            </span>
-                                            <span class="text-heading fw-medium">
-                                                color:
-                                                <span class="text-gray-500">yellow</span>
-                                            </span>
-                                        </li>
-                                        <li class="text-gray-400 mb-14 flex-align gap-14">
-                                            <span
-                                                class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                                                <i class="ph ph-check"></i>
-                                            </span>
-                                            <span class="text-heading fw-medium">
-                                                shipping time:
-                                                <span class="text-gray-500"> 6 days</span>
-                                            </span>
-                                        </li>
-                                        <li class="text-gray-400 mb-14 flex-align gap-14">
-                                            <span
-                                                class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                                                <i class="ph ph-check"></i>
-                                            </span>
-                                            <span class="text-heading fw-medium">
-                                                shipping price:
-                                                <span class="text-gray-500">AED 89</span>
-                                            </span>
-                                        </li>
-                                        <li class="text-gray-400 mb-14 flex-align gap-14">
-                                            <span
-                                                class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                                                <i class="ph ph-check"></i>
-                                            </span>
-                                            <span class="text-heading fw-medium">
-                                                tax:
-                                                <span class="text-gray-500">AED 70</span>
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
+                <!-- sorting -->
+                <div class="col-lg-9">
+                    <div class="flex-between gap-16 flex-wrap mb-40 ">
+                        <div id="resultsCount" class="text-gray-900"></div>
+                        <div class="position-relative flex-align gap-16 flex-wrap">
+                            <div class="list-grid-btns flex-align gap-16">
+                                <button type="button"
+                                    class="w-44 h-44 flex-center border border-gray-100 rounded-6 text-2xl list-btn">
+                                    <i class="ph-bold ph-list-dashes"></i>
+                                </button>
+                                <button type="button"
+                                    class="w-44 h-44 flex-center border border-main-600 text-white bg-main-600 rounded-6 text-2xl grid-btn">
+                                    <i class="ph ph-squares-four"></i>
+                                </button>
                             </div>
+                            <div id="sorting" class="position-relative text-gray-500 flex-align gap-4 text-14">
+                                <label for="sortFilter" class="text-inherit flex-shrink-0">Sort by:</label>
+                                <select id="sortFilter"
+                                    class="form-control common-input px-14 py-14 text-inherit rounded-6 w-auto">
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="featured">Featured</option>
+                                    <option value="today's deal">Today's Deal</option>
+                                </select>
+                            </div>
+                            <button type="button"
+                                class="w-44 h-44 d-lg-none d-flex flex-center border border-gray-100 rounded-6 text-2xl sidebar-btn"><i
+                                    class="ph-bold ph-funnel"></i></button>
                         </div>
                     </div>
-    </section>
 
-    <!-- ========================== Similar Product Start ============================= -->
-    <section class="new-arrival pb-80">
-        <div class="container container-lg">
-            <div class="section-heading">
-                <div class="flex-between flex-wrap gap-8">
-                    <h5 class="mb-0">You Might Also Like</h5>
-                    <div class="flex-align gap-16">
-                        <a href="shop.html"
-                            class="text-sm fw-medium text-gray-700 hover-text-main-600 hover-text-decoration-underline">All
-                            Products</a>
-                        <div class="flex-align gap-8">
-                            <button type="button" id="new-arrival-prev"
-                                class="new-arrival-prev slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-xl hover-bg-main-600 hover-text-white transition-1">
-                                <i class="ph ph-caret-left"></i>
-                            </button>
-                            <button type="button" id="new-arrival-next"
-                                class="new-arrival-next slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-xl hover-bg-main-600 hover-text-white transition-1">
-                                <i class="ph ph-caret-right"></i>
-                            </button>
+                    <!-- products -->
+                    <div class="list-grid-wrapper" id="productGrid">
+                        <div
+                            class="product-card h-100 p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
                         </div>
                     </div>
+
                 </div>
+
+                <!-- pagination -->
+                <ul class="pagination flex-center flex-wrap gap-16" id="pagination">
+                </ul>
+
             </div>
 
-            <div class="new-arrival__slider arrow-style-two">
-
-            </div>
+        </div>
         </div>
     </section>
-
-    <!-- ========================== Similar Product End ============================= -->
+    <!-- =============================== Shop Section End ======================================== -->
 
     <!-- ========================== Shipping Section Start ============================ -->
     <section class="shipping mb-24" id="shipping">
@@ -787,7 +457,7 @@
                                 class="ph-fill ph-car-profile"></i></span>
                         <div class="">
                             <h6 class="mb-0">Free Shipping</h6>
-                            <span class="text-sm text-heading">Free shipping nationwide</span>
+                            <span class="text-sm text-heading">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
@@ -798,7 +468,7 @@
                                 class="ph-fill ph-hand-heart"></i></span>
                         <div class="">
                             <h6 class="mb-0"> 100% Satisfaction</h6>
-                            <span class="text-sm text-heading">Guaranteed customer satisfaction</span>
+                            <span class="text-sm text-heading">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
@@ -809,7 +479,7 @@
                                 class="ph-fill ph-credit-card"></i></span>
                         <div class="">
                             <h6 class="mb-0"> Secure Payments</h6>
-                            <span class="text-sm text-heading">Safe, secure transactions</span>
+                            <span class="text-sm text-heading">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
@@ -820,7 +490,7 @@
                                 class="ph-fill ph-chats"></i></span>
                         <div class="">
                             <h6 class="mb-0"> 24/7 Support</h6>
-                            <span class="text-sm text-heading">Support anytime, anywhere.</span>
+                            <span class="text-sm text-heading">Free shipping all over the US</span>
                         </div>
                     </div>
                 </div>
@@ -829,28 +499,6 @@
     </section>
     <!-- ========================== Shipping Section End ============================ -->
 
-    <!-- =============================== Newsletter Section Start ============================ -->
-    <div class="newsletter">
-        <div class="container container-lg">
-            <div class="newsletter-box position-relative rounded-16 flex-align gap-16 flex-wrap z-1">
-                <img src="assets/images/bg/newsletter-bg.png" alt=""
-                    class="position-absolute inset-block-start-0 inset-inline-start-0 z-n1 w-100 h-100 opacity-6">
-                <div class="row align-items-center">
-                    <div class="col-xl-6">
-                        <div class="">
-                            <h1 class="text-white mb-12">Level Up Your Gaming Gear</h1>
-                            <p class="text-white h5 mb-0">STAY UPDATED WITH EXCLUSIVE OFFERS</p>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 text-center d-xl-block d-none">
-                        <img src="assets/images/bg/banner7.png" alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- =============================== Newsletter Section End ============================ -->
-
 
     <!-- ==================== Footer Two Start Here ==================== -->
     <footer class="footer py-80">
@@ -858,7 +506,7 @@
             <div class="footer-item-two-wrapper d-flex align-items-start flex-wrap">
                 <div class="footer-item max-w-275">
                     <div class="footer-item__logo">
-                        <a href="index.html"> <img src="assets/images/logo/footer.png" alt=""></a>
+                        <a href="index-2.html"> <img src="assets/images/logo/footer.png" alt=""></a>
                     </div>
                     <p class="mb-24">Marketpro become the largest computer parts, gaming pc parts, and other IT related
                         products.</p>
@@ -1017,25 +665,25 @@
 
                     <ul class="flex-align gap-16">
                         <li>
-                            <a href="#"
+                            <a href="https://www.facebook.com/"
                                 class="w-44 h-44 flex-center bg-main-two-50 text-main-two-600 text-xl rounded-8 hover-bg-main-two-600 hover-text-white">
                                 <i class="ph-fill ph-facebook-logo"></i>
                             </a>
                         </li>
                         <li>
-                            <a href="#"
+                            <a href="https://www.twitter.com/"
                                 class="w-44 h-44 flex-center bg-main-two-50 text-main-two-600 text-xl rounded-8 hover-bg-main-two-600 hover-text-white">
                                 <i class="ph-fill ph-twitter-logo"></i>
                             </a>
                         </li>
                         <li>
-                            <a href="#"
+                            <a href="https://www.linkedin.com/"
                                 class="w-44 h-44 flex-center bg-main-two-50 text-main-two-600 text-xl rounded-8 hover-bg-main-two-600 hover-text-white">
                                 <i class="ph-fill ph-instagram-logo"></i>
                             </a>
                         </li>
                         <li>
-                            <a href="#"
+                            <a href="https://www.pinterest.com/"
                                 class="w-44 h-44 flex-center bg-main-two-50 text-main-two-600 text-xl rounded-8 hover-bg-main-two-600 hover-text-white">
                                 <i class="ph-fill ph-linkedin-logo"></i>
                             </a>
@@ -1061,8 +709,6 @@
     </div>
     <!-- ==================== Footer Two End Here ==================== -->
 
-
-
     <!-- Jquery js -->
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap Bundle Js -->
@@ -1079,17 +725,17 @@
     <script src="assets/js/jquery-ui.js"></script>
     <!-- main js -->
     <script src="assets/js/main.js"></script>
-    <!-- product details -->
-    <script src="assets/js/product-details.js"></script>
+    <!-- categories -->
     <script src="assets/js/categories.js"></script>
+    <!-- <script src="assets/js/search.js"></script> -->
     <script src="assets/js/searchbox.js"></script>
-
-
+    <script src="assets/js/search.js"></script>
 
 
 
 
 </body>
 
+<!-- Mirrored from wowtheme7.com/tf/marketpro/shop.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 27 Aug 2024 06:58:31 GMT -->
 
 </html>

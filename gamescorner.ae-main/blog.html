@@ -50,21 +50,34 @@
 
     <!-- ==================== Search Box Start Here ==================== -->
     <form action="#" class="search-box">
-        <button type="button"
-            class="search-box__close position-absolute inset-block-start-0 inset-inline-end-0 m-16 w-48 h-48 border border-gray-100 rounded-circle flex-center text-white hover-text-gray-800 hover-bg-white text-2xl transition-1">
-            <i class="ph ph-x"></i>
+        <button
+          type="button"
+          class="search-box__close position-absolute inset-block-start-0 inset-inline-end-0 m-16 w-48 h-48 border border-gray-100 rounded-circle flex-center text-white hover-text-gray-800 hover-bg-white text-2xl transition-1"
+        >
+          <i class="ph ph-x"></i>
         </button>
         <div class="container">
-            <div class="position-relative">
-                <input type="text" class="form-control py-16 px-24 text-xl rounded-pill pe-64"
-                    placeholder="Search for a product or brand">
-                <button type="submit"
-                    class="w-48 h-48 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8">
-                    <i class="ph ph-magnifying-glass"></i>
-                </button>
-            </div>
+          <div class="position-relative">
+            <input
+              type="text"
+              id="searchInput1"
+              class="form-control py-16 px-24 text-xl rounded-pill pe-64"
+              placeholder="Search for a product"
+            />
+            <button
+              type="submit"
+              class="w-48 h-48 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8"
+            >
+              <i class="ph ph-magnifying-glass"></i>
+            </button>
+            <div
+              id="searchResults1"
+              class="dropdown-menu position-absolute w-100"
+              style="display: none"
+            ></div>
+          </div>
         </div>
-    </form>
+      </form>
     <!-- ==================== Search Box End Here ==================== -->
 
     <!-- ==================== Mobile Menu Start Here ==================== -->
@@ -103,46 +116,7 @@
                     <li class="nav-menu__item">
                         <a href="assemble.html" class="nav-menu__link">Assemble</a>
                     </li>
-                    <!-- <li class="on-hover-item nav-menu__item has-submenu">
-        <a href="javascript:void(0)" class="nav-menu__link">Shop</a>
-         <ul class="on-hover-dropdown common-dropdown nav-submenu scroll-sm">
-            <li class="common-dropdown__item nav-submenu__item">
-                <a href="shop.html" class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"> Shop</a>
-            </li>
-            <li class="common-dropdown__item nav-submenu__item">
-                <a href="product-details.html" class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"> Shop Details</a>
-            </li>
-            <li class="common-dropdown__item nav-submenu__item">
-                <a href="product-details-two.html" class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"> Shop Details Two</a>
-            </li>
-        </ul>
-    </li> -->
-                    <!-- <li class="on-hover-item nav-menu__item has-submenu">
-        <span class="badge-notification bg-warning-600 text-white text-sm py-2 px-8 rounded-4">New</span>
-        <a href="javascript:void(0)" class="nav-menu__link">Pages</a>
-         <ul class="on-hover-dropdown common-dropdown nav-submenu scroll-sm">
-            <li class="common-dropdown__item nav-submenu__item">
-                <a href="cart.html" class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"> Cart</a>
-            </li>
-            <li class="common-dropdown__item nav-submenu__item">
-                <a href="checkout.html" class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"> Checkout </a>
-            </li>
-            <li class="common-dropdown__item nav-submenu__item">
-                <a href="account.html" class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"> Account</a>
-            </li>
-        </ul>
-    </li> -->
-                    <!-- <li class="on-hover-item nav-menu__item has-submenu">
-        <a href="javascript:void(0)" class="nav-menu__link">Blog</a>
-         <ul class="on-hover-dropdown common-dropdown nav-submenu scroll-sm">
-            <li class="common-dropdown__item nav-submenu__item">
-                <a href="blog.html" class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"> Blog</a>
-            </li>
-            <li class="common-dropdown__item nav-submenu__item">
-                <a href="#" class="common-dropdown__link nav-submenu__link hover-bg-neutral-100"> Blog Details</a>
-            </li>
-        </ul>
-    </li> -->
+                   
 
                 </ul>
                 <!-- Nav Menu End -->
@@ -213,30 +187,18 @@
 
                 <!-- form location Start -->
                 <form action="#" class="flex-align flex-wrap form-location-wrapper">
-                    <div
-                        class="search-category d-flex h-48 select-border-end-0 radius-end-0 search-form d-sm-flex d-none">
+                    <div class="search-category d-flex h-48 select-border-end-0 radius-end-0 search-form d-sm-flex d-none">
                         <div class="search-form__wrapper position-relative">
-                            <input type="text"
+                            <input 
+                                type="text"
+                                id="searchInput2"
                                 class="search-form__input common-input py-13 ps-16 pe-18 rounded-end-pill pe-44"
-                                placeholder="Search for a product or brand">
+                                placeholder="Search for a product ">
                             <button type="submit"
-                                class="w-32 h-32 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8"><i
-                                    class="ph ph-magnifying-glass"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="location-box bg-white flex-align gap-8 py-6 px-16 rounded-pill border border-gray-100">
-                        <span class="text-gray-900 text-xl d-xs-flex d-none"><i class="ph ph-map-pin"></i></span>
-                        <div class="line-height-1">
-                            <span class="text-gray-600 text-xs">Your Location</span>
-                            <div class="line-height-1">
-                                <select class="js-example-basic-single border border-gray-200 border-end-0"
-                                    name="state">
-                                    <option value="1">AED</option>
-                                    <option value="1">UAE</option>
-                                    <option value="1">Bahrain</option>
-                                </select>
-                            </div>
+                                class="w-32 h-32 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8">
+                                <i class="ph ph-magnifying-glass"></i>
+                            </button>
+                            <div id="searchResults2" class="dropdown-menu position-absolute w-100" style="display: none;"></div>
                         </div>
                     </div>
                 </form>
@@ -250,7 +212,7 @@
                                 <i class="ph ph-magnifying-glass"></i>
                             </span>
                         </button>
-                        <a href="cart.html" class="flex-align gap-4 item-hover">
+                        <a href="wishlist.html" class="flex-align gap-4 item-hover">
                             <span class="text-2xl text-gray-700 d-flex position-relative me-6 mt-6 item-hover__text">
                                 <i class="ph ph-heart"></i>
                                 <span
@@ -380,7 +342,7 @@
                 class="notification-badge position-absolute top-n6 end-n4 bg-main-600 text-white rounded-circle text-xs flex-center wishlist">5</span>
         </a>
 
-        <a href="shop.html" class="nav-item position-relative" aria-label="Cart">
+        <a href="cart.html" class="nav-item position-relative" aria-label="Cart">
             <i class="ph ph-shopping-cart-simple"></i>
             <span>Cart</span>
             <!-- Cart Notification Badge -->
@@ -1000,6 +962,8 @@
     <script src="assets/js/main.js"></script>
     <!-- categories -->
     <script src="assets/js/categories.js"></script>
+    <script src="assets/js/searchbox.js"></script>
+    <script src="assets/js/wishlist.js"></script>
 
 
 

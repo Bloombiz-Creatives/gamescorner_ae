@@ -225,33 +225,37 @@ class CartManager {
 
     async fetchCartData() {
         try {
-            const token = localStorage.getItem('webtoken');
-            if (!token) throw new Error('User is not authenticated.');
-
-            const response = await fetch(`${this.baseApiUrl}/web_cart?currency_code=AED`, {
+            const token = localStorage.getItem("webtoken");
+            if (!token) {
+                throw new Error("User is not authenticated.");
+            }
+    
+            const response = await fetch(`${this.baseApiUrl}/cart`, {
+                method: "GET",
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
             });
-
+    
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-
+    
             const data = await response.json();
-            
-            if (data.success) {
-                this.renderCart(data);
-            } else {
-                this.renderEmptyCart();
-            }
+            console.log("Cart data fetched successfully:", data);
+    
+            return data;
         } catch (error) {
-            console.error('Error fetching cart data:', error);
-            this.renderErrorState(error);
+            console.error("Error fetching cart data:", error);
+            this.showNotification(
+                error.message || "Failed to fetch cart data.",
+                "error"
+            );
+            throw error; // Ensure errors bubble up for further handling.
         }
     }
-
+    
     renderCart(cartData) {
         if (!cartData?.cart?.products) {
             return this.renderEmptyCart();
