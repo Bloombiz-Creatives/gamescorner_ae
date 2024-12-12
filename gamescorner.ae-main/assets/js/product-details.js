@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setupImageGallery(product);
         setupWhatsAppSharing(product);
         handleAddToCart(product);
+        setupProductInteractions(product);
 
         if (product.parent_category?.[0]) {
           fetchRelatedProducts(product.parent_category[0]._id);
@@ -244,6 +245,15 @@ document.addEventListener("DOMContentLoaded", function () {
       message += `Quantity: ${quantity}\n`;
       message += `Description: ${stripHtmlTags(product.description)}\n`;
       message += `image: ${stripHtmlTags(product.image)}\n`;
+      message += `tax: AED ${
+        aedPricing ? aedPricing.tax_amount : product.tax_amount
+      }\n`;
+      message += `Shipping Price: AED ${
+        aedPricing ? aedPricing.shipping_time : product.shipping_price
+      }\n`;
+      message += `Shipping Time: ${
+        aedPricing ? aedPricing.shipping_price : product.shipping_time
+      }\n`;
 
       const encodedMessage = encodeURIComponent(message)
         .replace(/%0A/g, "%0A")
@@ -313,63 +323,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // function updateProductSpecifications(product) {
-
-  //     const colorContainer = document.querySelector('.color-list');
-
-  //     if (product.color && product.color.length > 0) {
-  //         const colorLabel = document.querySelector('span.fw-medium');
-  //         if (colorLabel) {
-  //             colorLabel.textContent = product.color[0].name || 'N/A';
-  //         }
-
-  //         colorContainer.innerHTML = '';
-
-  //         product.color.forEach(color => {
-  //             const colorButton = document.createElement('button');
-  //             colorButton.type = 'button';
-  //             colorButton.className = 'color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle';
-  //             colorButton.style.backgroundColor = color.color_code || '#000000';
-  //             colorButton.title = color.name;
-  //             colorContainer.appendChild(colorButton);
-  //         });
-  //     } else {
-  //         const colorSection = document.querySelector('.flex-between.align-items-start');
-  //         if (colorSection) {
-  //             colorSection.style.display = 'none';
-  //         }
-  //     }
-
-  //     const aedPricing = product.country_pricing?.find(p => p.currency_code === 'AED') ||
-  //     product.country_pricing?.[0];
-  //     const specsList = document.querySelector('.product-dContent__box ul');
-
-  //     const specifications = [
-  //         { label: 'Product Type', value: product.product_type || 'N/A' },
-  //         { label: 'Brand', value: product.brand?.[0]?.name || 'N/A' },
-  //         { label: 'Category', value: product.parent_category?.[0]?.parent_category || 'N/A' },
-  //         { label: 'Unit', value: product.unit || 'N/A' },
-  //         { label: 'Weight', value: product.weight || 'N/A' },
-  //         { label: 'Attribute', value: product.attribute?.[0]?.name || 'N/A' },
-  //         { label: 'Color', value: product.color?.[0]?.name || 'N/A' },
-  //         { label: 'Shipping Time', value: `${aedPricing?.shipping_time || product.shipping_time || 'N/A'}` },
-  //         { label: 'Shipping Price', value: `AED ${aedPricing?.shipping_price || product.shipping_price || 'N/A'}` },
-  //         { label: 'Tax', value: `${aedPricing?.tax_percentage ? `${aedPricing.tax_percentage}%` : (product.tax_percentage ? `${product.tax_percentage}%` : 'N/A')}` }
-  //     ];
-
-  //     specsList.innerHTML = specifications.map(spec => `
-  //         <li class="text-gray-400 mb-14 flex-align gap-14">
-  //             <span class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-  //                 <i class="ph ph-check"></i>
-  //             </span>
-  //             <span class="text-heading fw-medium">
-  //                 ${spec.label}:
-  //                 <span class="text-gray-500">${spec.value}</span>
-  //             </span>
-  //         </li>
-  //     `).join('');
-
-  // }
   function updateProductSpecifications(product) {
     const aedPricing =
       product.country_pricing?.find((p) => p.currency_code === "AED") ||
@@ -739,4 +692,110 @@ function handleAddToCart(productOrEvent) {
         addToCartButton.textContent = "Add to Cart";
       }
     });
+}
+
+//WISH LIST ADDING
+function handleAddToWishlist(productOrEvent) {
+  const webtoken = localStorage.getItem("webtoken");
+  if (!webtoken) {
+    alert("Please login first");
+    window.location.href = "account.html";
+    return;
+  }
+
+  let productId;
+
+  // Handle both event and direct product object scenarios
+  if (productOrEvent && productOrEvent.preventDefault) {
+    productOrEvent.preventDefault();
+    const button = productOrEvent.target.closest("button, a");
+    if (!button) {
+      console.error("Unable to find the button element.");
+      return;
+    }
+    productId = button.getAttribute("data-product-id");
+  } else {
+    // It's a product object
+    const product = productOrEvent;
+    if (!product) {
+      console.error("No product data available");
+      return;
+    }
+    productId = product._id;
+  }
+
+  // Update wishlist button state
+  const wishlistButton = document.querySelector(`#wishlist-btn[data-product-id="${productId}"]`);
+  if (wishlistButton) {
+    wishlistButton.disabled = true;
+    wishlistButton.innerHTML = 'Adding... <i class="ph ph-heart"></i>';
+  }
+
+  // Make the API call to add to wishlist
+  fetch("https://api.gamescorner.ae/api/wish", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${webtoken}`,
+    },
+    body: JSON.stringify({ productId }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((errorData) => {
+          throw new Error(errorData.message || "Failed to add to wishlist");
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Product added to wishlist:", data);
+
+      // Update button to show it's been added
+      if (wishlistButton) {
+        wishlistButton.classList.add("text-red-500");
+        wishlistButton.innerHTML = 'Added <i class="ph ph-heart-fill"></i>';
+
+        // Optional: Prevent multiple additions
+        wishlistButton.disabled = true;
+      }
+
+      // Show success alert
+      alert(data.message || "Product added to wishlist successfully!");
+    })
+    .catch((error) => {
+      console.error("Error adding product to wishlist:", error);
+
+      // Reset button state on error
+      if (wishlistButton) {
+        wishlistButton.disabled = false;
+        wishlistButton.innerHTML = '<i class="ph ph-heart"></i>';
+        wishlistButton.classList.remove("text-red-500");
+      }
+
+      // Show error alert
+      alert("Error adding product to wishlist: " + error.message);
+    });
+}
+
+function setupProductInteractions(product) {
+  // Ensure `product` has a valid `_id` property
+  if (!product || !product._id) {
+    console.error("Invalid product data provided.");
+    return;
+  }
+
+  // Get the wishlist button using the correct ID or selector
+  const wishlistButton = document.getElementById("wishlist-btn");
+
+  if (wishlistButton) {
+    // Set the `data-product-id` attribute to the product's ID
+    wishlistButton.setAttribute("data-product-id", product._id);
+    console.log("Wishlist button configured:", wishlistButton);
+
+    // Add the event listener for the wishlist interaction
+    wishlistButton.addEventListener("click", handleAddToWishlist);
+  } else {
+    console.error("Wishlist button not found in the DOM.");
+  }
 }
