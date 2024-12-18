@@ -650,6 +650,9 @@ function handleAddToCart(productOrEvent) {
       product_quantity: quantity,
       product_price: aedPricing.discount || product.price,
       product_discount: aedPricing.unit_price || product.price * 1.5,
+      shipping_price: aedPricing.shipping_price,
+      tax_amount: aedPricing.tax_amount,
+      shipping_time: aedPricing.shipping_time,
     };
   }
 
@@ -678,8 +681,8 @@ function handleAddToCart(productOrEvent) {
       return response.json();
     })
     .then((data) => {
-      console.log("Product added to cart:", data);
-      alert("Product added to cart successfully!");
+      console.log("HlellllllllS");
+      // alert("Product added to cart successfully!");
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -725,10 +728,12 @@ function handleAddToWishlist(productOrEvent) {
   }
 
   // Update wishlist button state
-  const wishlistButton = document.querySelector(`#wishlist-btn[data-product-id="${productId}"]`);
+  const wishlistButton = document.querySelector(
+    `#wishlist-btn[data-product-id="${productId}"]`
+  );
   if (wishlistButton) {
     wishlistButton.disabled = true;
-    wishlistButton.innerHTML = 'Adding... <i class="ph ph-heart"></i>';
+    wishlistButton.innerHTML = '<i class="ph ph-heart"></i>';
   }
 
   // Make the API call to add to wishlist
@@ -754,7 +759,7 @@ function handleAddToWishlist(productOrEvent) {
       // Update button to show it's been added
       if (wishlistButton) {
         wishlistButton.classList.add("text-red-500");
-        wishlistButton.innerHTML = 'Added <i class="ph ph-heart-fill"></i>';
+        wishlistButton.innerHTML = '<i class="ph ph-heart-fill"></i>';
 
         // Optional: Prevent multiple additions
         wishlistButton.disabled = true;

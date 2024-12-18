@@ -1,6 +1,7 @@
 class ProductListing {
     constructor() {
-        this.baseUrl = 'https://api.gamescorner.ae/api/productweb';
+        // this.baseUrl = 'https://api.gamescorner.ae/api/productweb';
+        this.baseUrl = ' http://localhost:5002/api/productweb';
         this.currentPage = 1;
         this.productsPerPage = 20;
         this.allProducts = [];
@@ -383,6 +384,10 @@ class ProductListing {
         const price = aedPricing?.unit_price || 'N/A';
         const discount = aedPricing?.discount || 'N/A';
         const currencyCode = aedPricing ? aedPricing.currency_code : 'N/A';
+        const tax_amount = aedPricing? aedPricing.tax_amount : 'N/A';
+        const shippingprice = aedPricing? aedPricing.shipping_price : 'N/A';
+        const shippingtime = aedPricing? aedPricing.shipping_time : 'N/A'
+
 
 
         return `
@@ -402,7 +407,7 @@ class ProductListing {
                       <span class="text-heading text-md fw-semibold ">AED ${discount}<span
                       class="text-gray-500 fw-normal"></span> </span>
                  </div>
-                  <a href="" class="product-card__cart btn bg-gray-50 text-heading hover-bg-main-600 hover-text-white py-11 px-24 rounded-8 flex-center gap-8 fw-medium" tabindex="0" data-product-id="${product._id}" data-product-price="${price}" data-product-discount="${discount}" data-product-currencycode="${currencyCode}" data-product-quantity="1"  onClick="handleAddToCart(event)">
+                  <a href="" class="product-card__cart btn bg-gray-50 text-heading hover-bg-main-600 hover-text-white py-11 px-24 rounded-8 flex-center gap-8 fw-medium" tabindex="0" data-product-id="${product._id}" data-product-price="${price}" data-product-discount="${discount}" data-product-currencycode="${currencyCode}" data-product-quantity="1" data-product-shipping="${shippingprice}" data-product-tax= "${tax_amount} data-product-shippingtime="${shippingtime}"  onClick="handleAddToCart(event)" >
                         Add To Cart <i class="ph ph-shopping-cart"></i>
                     </a>
                 </div>
@@ -510,20 +515,28 @@ function handleAddToCart(event) {
     const productDiscount = button.getAttribute('data-product-discount');
     const productCurrencyCode = button.getAttribute('data-product-currencycode');
     const productQuantity = button.getAttribute('data-product-quantity') || 1;
+    const shippingprice = button.getAttribute ('data-product-shipping')  ;
+    const  taxamount = button.getAttribute ('data-product-tax');
+    const shippingtime = button.getAttribute ('data-product-shippingtime');
+    
 
     const productData = {
         productId,
         product_currecy_code: productCurrencyCode,
         product_quantity: parseInt(productQuantity, 10),
         product_price: parseFloat(productPrice),
-        product_discount: parseFloat(productDiscount)
+        product_discount: parseFloat(productDiscount),
+        shipping_price: parseInt (shippingprice),
+        shipping_time:shippingtime,
+        tax_amount: parseFloat(taxamount)
+
     };
 
     fetch('https://api.gamescorner.ae/api/web_cart', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${webtoken}` // Ensure this matches your backend expectation
+            'Authorization': `Bearer ${webtoken}`
         },
         body: JSON.stringify(productData),
     })
