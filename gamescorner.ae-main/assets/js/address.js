@@ -299,6 +299,10 @@ class ShippingAddressManager {
       alert(`Error: ${error.message}`);
     }
   }
+
+
+
+  
 }
 
 // Initialize the manager when the DOM is loaded

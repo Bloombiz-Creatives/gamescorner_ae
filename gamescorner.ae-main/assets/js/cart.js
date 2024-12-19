@@ -38,7 +38,7 @@ class CartManager {
       )
       .forEach((element) => {
         element.replaceWith(element.cloneNode(true));
-      });
+      });   
 
     // Quantity Minus Button
     document.querySelectorAll(".quantity_cart_minus").forEach((button) => {
@@ -105,41 +105,97 @@ class CartManager {
   }
 
   // Apply coupon to the cart
+  
   async applyCoupon() {
     try {
-      const couponCode = this.couponInput.value.trim();
+      const couponCode = this.couponInput?.value?.trim();
       if (!couponCode) {
-        alert("Please enter a coupon code.");
+        this.showNotification("Please enter a coupon code", "error");
         return;
       }
 
-      const token = localStorage.getItem("webtoken");
-      if (!token) throw new Error("User is not authenticated.");
+      const webtoken = localStorage.getItem("webtoken");
+      if (!webtoken) {
+        this.showNotification("Please login to apply coupon", "error");
+        return;
+      }
 
-      const response = await fetch(`${this.baseApiUrl}/apply-coupon`, {
+      // Get the currency code from the page or default to AED
+      const currency_code = document.querySelector('[data-currency-code]')?.dataset?.currencyCode || 'AED';
+
+      const response = await fetch(`${this.baseApiUrl}/cart_coupon_apply`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Authorization": `Bearer ${webtoken}`,
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ couponCode }),
+        body: JSON.stringify({
+          couponCode,
+          currency_code
+        })
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to apply coupon.");
+        throw new Error(data.message || "Failed to apply coupon");
       }
 
-      // Re-fetch the cart data to show updated totals
-      await this.fetchCartData();
+      
+      this.updateUIAfterCoupon(data.data);
+      
       this.showNotification("Coupon applied successfully!", "success");
+      
+      this.couponInput.value = "";
+
     } catch (error) {
       console.error("Error applying coupon:", error);
       this.showNotification(error.message || "Failed to apply coupon", "error");
     }
   }
 
+  updateUIAfterCoupon(data) {
+    const { summary, cart } = data;
+    
+    // Update subtotal
+    const subtotalElement = this.cartSidebar?.querySelector('.text-gray-900.fw-semibold');
+    if (subtotalElement) {
+      subtotalElement.textContent = `AED ${summary.subtotal.toFixed(2)}`;
+    }
+
+    // Update discount
+    const discountElement = this.cartSidebar?.querySelector('.text-success.fw-semibold');
+    if (discountElement) {
+      discountElement.textContent = `- AED ${summary.totalDiscount.toFixed(2)}`;
+    }
+
+    // Update final price
+    const grandTotalElement = this.cartSidebar?.querySelector('.grand-total');
+    if (grandTotalElement) {
+      grandTotalElement.textContent = `AED ${summary.finalPrice.toFixed(2)}`;
+    }
+
+    // Add coupon info display
+    const couponInfoDiv = document.createElement('div');
+    couponInfoDiv.className = 'mb-32 flex-between gap-8';
+    couponInfoDiv.innerHTML = `
+      <span class="text-gray-900 font-heading-two">Applied Coupon</span>
+      <span class="text-success fw-semibold">${summary.appliedCoupon.code} (${
+        summary.appliedCoupon.discountType === 'percentage' 
+          ? `${summary.appliedCoupon.discountValue}%` 
+          : `AED ${summary.appliedCoupon.discountValue}`
+      })</span>
+    `;
+
+    // Insert coupon info before the total
+    const totalContainer = this.cartSidebar?.querySelector('.grand-total')?.closest('.flex-between')?.parentElement;
+    if (totalContainer) {
+      totalContainer.insertBefore(couponInfoDiv, totalContainer.lastElementChild);
+    }
+
+    // Store coupon data in localStorage for persistence
+    localStorage.setItem('appliedCoupon', JSON.stringify(summary.appliedCoupon));
+  }
   // Updated method to update product quantity and subtotal
   async updateProductQuantity(quantityInput) {
     try {
@@ -319,6 +375,7 @@ class CartManager {
 
     // Calculate grand total
     grandTotal = totalProductDiscount + totalShippingPrice + totalTax;
+ 
 
     // Update the cart sidebar
     if (this.cartSidebar) {
@@ -503,6 +560,7 @@ class CartManager {
     // Update the cart summary in the sidebar
     if (this.cartSidebar) {
       this.cartSidebar.innerHTML = `
+      
         <div class="cart-sidebar p-24 bg-color-three rounded-8 mb-24">
           <div class="mb-32 flex-between gap-8">
             <span class="text-gray-900 font-heading-two">Subtotal</span>

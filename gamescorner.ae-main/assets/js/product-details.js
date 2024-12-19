@@ -136,8 +136,8 @@
 //     const mainImageDiv = document.createElement("div");
 //     mainImageDiv.innerHTML = `
 //             <div class="product-details__thumb flex-center h-100">
-//                 <img src="${images[0]}" 
-//                      alt="Main product image" 
+//                 <img src="${images[0]}"
+//                      alt="Main product image"
 //                      onerror="this.src='/assets/images/default-product.png'"
 //                      class="main-product-image"
 //                      style="max-width: 100%; height: auto; object-fit: contain;">
@@ -162,7 +162,7 @@
 //       thumbnailDiv.innerHTML = `
 //                 <div>
 //                 <div class="max-w-120 max-h-120 h-100 flex-center border border-gray-100 rounded-16 p-8 m-2">
-//                     <img src="${img}" 
+//                     <img src="${img}"
 //                          alt="Product thumbnail ${index + 1}"
 //                          data-image="${img}"
 //                          onerror="this.src='/assets/images/default-product.png'"
@@ -507,10 +507,10 @@
 //                                 : ""
 //                             }
 //                         </div>
-                       
+
 //                         <button onclick="window.location.href='product-details.html?id=${
 //                           product._id
-//                         }'" 
+//                         }'"
 //                             class="product-card__cart btn bg-main-50 text-main-600 hover-bg-main-600 hover-text-white py-11 px-24 rounded-pill flex-align gap-8 mt-24 w-100 justify-content-center" data-product-id="${
 //                               product._id
 //                             }" data-product-price="${currentPrice}" data-product-discount="${originalPrice}" data-product-currencycode="${currencyCode}" data-product-quantity="1" onClick="handleAddToCart(event)">
@@ -805,7 +805,6 @@
 //   }
 // }
 
-
 document.addEventListener("DOMContentLoaded", function () {
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get("id");
@@ -820,7 +819,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function fetchProductDetails() {
     try {
       const response = await fetch(
-       ` http://localhost:5002/api/product/${productId}`
+        ` http://localhost:5002/api/product/${productId}`
       );
 
       if (!response.ok) {
@@ -836,11 +835,11 @@ document.addEventListener("DOMContentLoaded", function () {
         setupWhatsAppSharing(product);
         setupProductInteractions(product);
 
-        const addToCartBtn = document.querySelector('.add-to-cart-btn');
+        const addToCartBtn = document.querySelector(".add-to-cart-btn");
         if (addToCartBtn) {
           addToCartBtn.replaceWith(addToCartBtn.cloneNode(true));
-          const newAddToCartBtn = document.querySelector('.add-to-cart-btn');
-            newAddToCartBtn.addEventListener('click', (e) => {
+          const newAddToCartBtn = document.querySelector(".add-to-cart-btn");
+          newAddToCartBtn.addEventListener("click", (e) => {
             e.preventDefault();
             handleAddToCart(product);
           });
@@ -863,26 +862,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //set up quantity
   function setupQuantityHandlers() {
-    const quantityInput = document.querySelector('.quantity__input');
-    const minusBtn = document.querySelector('.quantity__minus');
-    const plusBtn = document.querySelector('.quantity__plus');
+    const quantityInput = document.querySelector(".quantity__input");
+    const minusBtn = document.querySelector(".quantity__minus");
+    const plusBtn = document.querySelector(".quantity__plus");
 
     if (quantityInput && minusBtn && plusBtn) {
       quantityInput.value = 1;
 
-      minusBtn.addEventListener('click', () => {
+      minusBtn.addEventListener("click", () => {
         const currentValue = parseInt(quantityInput.value) || 1;
         if (currentValue > 1) {
           quantityInput.value = currentValue - 1;
         }
       });
 
-      plusBtn.addEventListener('click', () => {
+      plusBtn.addEventListener("click", () => {
         const currentValue = parseInt(quantityInput.value) || 1;
         quantityInput.value = currentValue + 1;
       });
 
-      quantityInput.addEventListener('change', () => {
+      quantityInput.addEventListener("change", () => {
         let value = parseInt(quantityInput.value) || 1;
         if (value < 1) value = 1;
         quantityInput.value = value;
@@ -1068,7 +1067,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const facebookButton = document.getElementById("facebook");
   const currentURL = encodeURIComponent(window.location.href);
-  facebookButton.href =` https://www.facebook.com/sharer/sharer.php?u=${currentURL}`;
+  facebookButton.href = ` https://www.facebook.com/sharer/sharer.php?u=${currentURL}`;
 
   const whatsappButton = document.getElementById("whatsapp");
   whatsappButton.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(
@@ -1085,7 +1084,7 @@ document.addEventListener("DOMContentLoaded", function () {
         product.country_pricing.find((p) => p.currency_code === "AED") ||
         product.country_pricing[0];
 
-      let message =` I'm interested in ${product.name}\n`;
+      let message = ` I'm interested in ${product.name}\n`;
       message += `Price: AED ${
         aedPricing ? aedPricing.discount : product.price
       }\n`;
@@ -1110,8 +1109,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       function generateWhatsAppUrls(phoneNumber, message) {
         return [
-         ` https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`,
-         ` whatsapp://send?phone=${phoneNumber}&text=${message}`,
+          ` https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`,
+          ` whatsapp://send?phone=${phoneNumber}&text=${message}`,
           `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${message}`,
         ];
       }
@@ -1189,10 +1188,17 @@ document.addEventListener("DOMContentLoaded", function () {
       { label: "Unit", value: product.unit || "N/A" },
       { label: "Weight", value: product.weight || "N/A" },
       { label: "Attribute", value: product.attribute?.[0]?.name || "N/A" },
-      { label: "Color", value: product.color?.[0]?.name || "N/A" },
+      {
+        label: "Color",
+        value: product.color?.length > 0
+          ? product.color.map((c) => c.name).join(", ") // Join all color names into a single string
+          : "N/A",
+      },
       {
         label: "Shipping Time",
-        value:` ${aedPricing?.shipping_time || product.shipping_time || "N/A"}`,
+        value: ` ${
+          aedPricing?.shipping_time || product.shipping_time || "N/A"
+        }`,
       },
       {
         label: "Shipping Price",
@@ -1228,32 +1234,42 @@ document.addEventListener("DOMContentLoaded", function () {
       )
       .join("");
 
-    if (colorSection) {
-      if (product.color && product.color.length > 0) {
-        const colorLabelSpan = colorSection.querySelector("span.fw-medium");
-        if (colorLabelSpan) {
-          colorLabelSpan.textContent = product.color[0].name || "N/A";
+      if (colorSection) {
+        if (product.color && product.color.length > 0) {
+          // Update the color label with comma-separated color names
+          const colorLabelSpan = colorSection.querySelector("span.fw-medium");
+          if (colorLabelSpan) {
+            colorLabelSpan.textContent = product.color
+              .map((color) => color.name || "N/A")
+              .join(", ");
+          }
+      
+          // Clear the color container
+          const colorContainer = colorSection.querySelector(".color-list");
+          if (colorContainer) {
+            colorContainer.innerHTML = ""; // Clear existing colors
+      
+            // Loop through each color and add a button
+            product.color.forEach((color) => {
+              const colorButton = document.createElement("button");
+              colorButton.type = "button";
+              colorButton.className =
+                "color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle";
+              colorButton.style.backgroundColor = color.color_code || "#000000";
+              colorButton.title = color.name || "N/A";
+      
+              // Add the button to the container
+              colorContainer.appendChild(colorButton);
+            });
+          }
+          // Ensure the color section is visible
+          colorSection.style.display = "flex";
+        } else {
+          // Hide the color section if no colors are available
+          colorSection.style.display = "none";
         }
-
-        const colorContainer = colorSection.querySelector(".color-list");
-        if (colorContainer) {
-          colorContainer.innerHTML = "";
-
-          product.color.forEach((color) => {
-            const colorButton = document.createElement("button");
-            colorButton.type = "button";
-            colorButton.className =
-              "color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle";
-            colorButton.style.backgroundColor = color.color_code || "#000000";
-            colorButton.title = color.name;
-            colorContainer.appendChild(colorButton);
-          });
-        }
-        colorSection.style.display = "flex";
-      } else {
-        colorSection.style.display = "none";
       }
-    }
+      
   }
 
   async function fetchRelatedProducts(parentCategory) {
@@ -1322,9 +1338,9 @@ document.addEventListener("DOMContentLoaded", function () {
         ? aedPricing.discount
         : currentPrice * 1.5;
       const currencyCode = aedPricing ? aedPricing.currency_code : "AED";
-      const shippingPrice = aedPricing? aedPricing.shipping_price : " ";
-      const taxAmount = aedPricing? aedPricing.tax_amount : " ";
-      const shippingTime = aedPricing? aedPricing.shipping_time : " ";
+      const shippingPrice = aedPricing ? aedPricing.shipping_price : " ";
+      const taxAmount = aedPricing ? aedPricing.tax_amount : " ";
+      const shippingTime = aedPricing ? aedPricing.shipping_time : " ";
       productCard.innerHTML = `
                 <a href="product-details.html?id=${
                   product._id
@@ -1456,7 +1472,6 @@ function handleAddToCart(productOrEvent) {
       return;
     }
 
-   
     // Get quantity from input if it exists
     const quantityInput = document.querySelector(".quantity__input");
     const quantity = quantityInput ? parseInt(quantityInput.value, 10) : 1;
@@ -1471,10 +1486,16 @@ function handleAddToCart(productOrEvent) {
       product_currecy_code: button.getAttribute("data-product-currencycode"),
       product_quantity: quantity,
       product_price: parseFloat(button.getAttribute("data-product-price")),
-      product_discount: parseFloat(button.getAttribute("data-product-discount")),
-      shipping_price: parseFloat(button.getAttribute("data-product-shippingprice")),
+      product_discount: parseFloat(
+        button.getAttribute("data-product-discount")
+      ),
+      shipping_price: parseFloat(
+        button.getAttribute("data-product-shippingprice")
+      ),
       tax_amount: parseFloat(button.getAttribute("data-product-taxamount")),
-      shipping_time: parseFloat(button.getAttribute("data-product-shippingtime")),
+      shipping_time: parseFloat(
+        button.getAttribute("data-product-shippingtime")
+      ),
     };
   } else {
     // Handle direct product object
@@ -1492,7 +1513,9 @@ function handleAddToCart(productOrEvent) {
       return;
     }
 
-    const aedPricing = product.country_pricing?.find(p => p.currency_code === "AED") || product.country_pricing?.[0];
+    const aedPricing =
+      product.country_pricing?.find((p) => p.currency_code === "AED") ||
+      product.country_pricing?.[0];
 
     if (!aedPricing) {
       alert("Unable to add product to cart: Missing pricing information");
@@ -1507,7 +1530,7 @@ function handleAddToCart(productOrEvent) {
       product_discount: aedPricing.discount || product.price * 1.5,
       shipping_price: aedPricing.shipping_price,
       tax_amount: aedPricing.tax_amount,
-      shipping_time: aedPricing.shipping_time
+      shipping_time: aedPricing.shipping_time,
     };
   }
 
@@ -1515,7 +1538,8 @@ function handleAddToCart(productOrEvent) {
   const addToCartButton = document.querySelector(".add-to-cart-btn");
   if (addToCartButton) {
     addToCartButton.disabled = true;
-    addToCartButton.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Adding...';
+    addToCartButton.innerHTML =
+      '<i class="ph ph-spinner ph-spin"></i> Adding...';
   }
 
   // Make the API call
@@ -1523,22 +1547,23 @@ function handleAddToCart(productOrEvent) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${webtoken}`
+      Authorization: `Bearer ${webtoken}`,
     },
-    body: JSON.stringify(productData)
+    body: JSON.stringify(productData),
   })
-    .then(async response => {
+    .then(async (response) => {
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || "Failed to add item to cart");
       }
-      
+
       return data;
     })
-    .then(data => {
+    .then((data) => {
       const successAlert = document.createElement("div");
-      successAlert.className = "alert alert-success position-fixed top-0 end-0 m-3";
+      successAlert.className =
+        "alert alert-success position-fixed top-0 end-0 m-3";
       successAlert.style.zIndex = "9999";
       successAlert.innerHTML = `
         <div class="d-flex align-items-center">
@@ -1554,9 +1579,10 @@ function handleAddToCart(productOrEvent) {
 
       updateCartCount();
     })
-    .catch(error => {
+    .catch((error) => {
       const errorAlert = document.createElement("div");
-      errorAlert.className = "alert alert-danger position-fixed top-0 end-0 m-3";
+      errorAlert.className =
+        "alert alert-danger position-fixed top-0 end-0 m-3";
       errorAlert.style.zIndex = "9999";
       errorAlert.innerHTML = `
         <div class="d-flex align-items-center">
@@ -1573,12 +1599,11 @@ function handleAddToCart(productOrEvent) {
     .finally(() => {
       if (addToCartButton) {
         addToCartButton.disabled = false;
-        addToCartButton.innerHTML = 'Add To Cart <i class="ph ph-shopping-cart"></i>';
+        addToCartButton.innerHTML =
+          'Add To Cart <i class="ph ph-shopping-cart"></i>';
       }
     });
 }
-
-
 
 function updateCartCount() {
   const webtoken = localStorage.getItem("webtoken");
@@ -1586,17 +1611,17 @@ function updateCartCount() {
 
   fetch("https://api.gamescorner.ae/api/web_cart", {
     headers: {
-      Authorization:` Bearer ${webtoken}`
-    }
+      Authorization: ` Bearer ${webtoken}`,
+    },
   })
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       const cartCountElement = document.querySelector(".cart-count");
       if (cartCountElement && data.cart) {
         cartCountElement.textContent = data.cart.length;
       }
     })
-    .catch(error => console.error("Error updating cart count:", error));
+    .catch((error) => console.error("Error updating cart count:", error));
 }
 //WISH LIST ADDING
 function handleAddToWishlist(productOrEvent) {
@@ -1629,7 +1654,7 @@ function handleAddToWishlist(productOrEvent) {
 
   // Update wishlist button state
   const wishlistButton = document.querySelector(
-   ` #wishlist-btn[data-product-id="${productId}"]`
+    ` #wishlist-btn[data-product-id="${productId}"]`
   );
   if (wishlistButton) {
     wishlistButton.disabled = true;
@@ -1669,7 +1694,7 @@ function handleAddToWishlist(productOrEvent) {
         wishlistButton.innerHTML = '<i class="ph ph-heart"></i>';
         wishlistButton.classList.remove("text-red-500");
       }
-      alert( error.message);
+      alert(error.message);
     });
 }
 
@@ -1687,5 +1712,5 @@ function setupProductInteractions(product) {
     wishlistButton.addEventListener("click", handleAddToWishlist);
   } else {
     console.error("Wishlist button not found in the DOM.");
-  }
+  }
 }
