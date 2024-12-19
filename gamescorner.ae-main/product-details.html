@@ -464,14 +464,13 @@
                                             <button type="button"
                                                 class="quantity__minus p-4 text-gray-700 hover-text-main-600 flex-center"><i
                                                     class="ph ph-minus"></i></button>
-                                            <input type="number" class="quantity__input border-0 text-center w-32"
-                                                value="1">
+                                                    <input type="number" class="quantity__input border-0 text-center w-32" value="1" min="1">
                                             <button type="button"
                                                 class="quantity__plus p-4 text-gray-700 hover-text-main-600 flex-center"><i
                                                     class="ph ph-plus"></i></button>
                                         </div>
                                         <a href=""
-                                            class="btn btn-main rounded-pill flex-align d-inline-flex gap-8 px-48 add-to-cart-btn"
+                                            class=" add-to-cart-btn  btn-main rounded-pill flex-align d-inline-flex gap-8 px-48 add-to-cart-btn"
                                             data-product-id="{{ product.id }}"
                                             data-product-currencycode="{{ product.currencyCode }}"
                                             data-product-quantity="{{ product.quantity }}"
