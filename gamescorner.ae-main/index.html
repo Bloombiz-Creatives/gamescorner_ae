@@ -496,21 +496,21 @@
     <div class="container container-lg">
       <div class="section-heading">
         <div class="flex-between flex-wrap gap-8">
-        <h5 class="mb-0">New Arrivals</h5>
-        <div class="flex-align gap-16">
-          <a href="shop.html"
-            class="text-sm fw-medium text-gray-700 hover-text-main-600 hover-text-decoration-underline">View All
-            Deals</a>
-          <div class="flex-align gap-8">
-            <button type="button" id="newArrival-prev"
-              class="slick-prev slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-xl hover-bg-main-600 hover-text-white transition-1">
-              <i class="ph ph-caret-left"></i>
-            </button>
-            <button type="button" id="newArrival-next"
-              class="slick-next slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-xl hover-bg-main-600 hover-text-white transition-1">
-              <i class="ph ph-caret-right"></i>
-            </button>
-          </div>
+          <h5 class="mb-0">New Arrivals</h5>
+          <div class="flex-align gap-16">
+            <a href="shop.html"
+              class="text-sm fw-medium text-gray-700 hover-text-main-600 hover-text-decoration-underline">View All
+              Deals</a>
+            <div class="flex-align gap-8">
+              <button type="button" id="newArrival-prev"
+                class="slick-prev slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-xl hover-bg-main-600 hover-text-white transition-1">
+                <i class="ph ph-caret-left"></i>
+              </button>
+              <button type="button" id="newArrival-next"
+                class="slick-next slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-xl hover-bg-main-600 hover-text-white transition-1">
+                <i class="ph ph-caret-right"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -623,7 +623,7 @@
 
 
   <!-- ========================== Short Product Section Start ============================== -->
-  <div class="short-product">
+  <div class="short-product mt-24">
     <div class="container container-lg">
       <div class="row gy-2">
         <!-- featured -->
@@ -668,6 +668,49 @@
             <div id="dealsTableBody"></div>
           </div>
         </div>
+        <!-- Latest products -->
+        <div class="col-xxl-3 col-lg-4 col-sm-6">
+          <div class="p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
+            <div class="p-16 bg-main-50 rounded-16 mb-32">
+              <h6 class="underlined-line position-relative mb-0 pb-16 d-inline-block">
+                Latest Products
+                <div class="flex-align gap-8">
+                  <button type="button" id="lat-prev"
+                    class="slick-prev slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-sm hover-bg-main-600 hover-text-white transition-1 w-28 h-28">
+                    <i class="ph ph-caret-left text-base"></i>
+                  </button>
+                  <button type="button" id="late-next"
+                    class="slick-next slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-sm hover-bg-main-600 hover-text-white transition-1 w-28 h-28">
+                    <i class="ph ph-caret-right text-base"></i>
+                  </button>
+                </div>
+              </h6>
+            </div>
+            <div id="dealsLatest"></div>
+          </div>
+        </div>
+        <!-- Classic Picks -->
+        <div class="col-xxl-3 col-lg-4 col-sm-6">
+          <div class="p-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
+            <div class="p-16 bg-main-50 rounded-16 mb-32">
+              <h6 class="underlined-line position-relative mb-0 pb-16 d-inline-block">
+                Classic Picks
+                <div class="flex-align gap-8">
+                  <button type="button" id="clasic-prev"
+                    class="slick-prev slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-sm hover-bg-main-600 hover-text-white transition-1 w-28 h-28">
+                    <i class="ph ph-caret-left text-base"></i>
+                  </button>
+                  <button type="button" id="clasic-next"
+                    class="slick-next slick-arrow flex-center rounded-circle border border-gray-100 hover-border-main-600 text-sm hover-bg-main-600 hover-text-white transition-1 w-28 h-28">
+                    <i class="ph ph-caret-right text-base"></i>
+                  </button>
+                </div>
+              </h6>
+            </div>
+            <div id="dealsClassic"></div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1019,10 +1062,11 @@
   <script src="assets/js/searchbox.js"></script>
   <script src="assets/js/wishlist.js"></script>
   <script src="assets/js/cart.js"></script>
-
   <script src="assets/js/newarrivals.js"></script>
-
   <script src="assets/js/oldproducts.js"></script>
+  <script src="assets/js/latest.js"></script>
+  <script src="assets/js/classic.js"></script>
+
 
 </body>
 

@@ -99,11 +99,15 @@ class TodaysDealsManager {
         90
       );
 
+      const truncatedName = this.truncatedName(
+        this.stripHtmlTags(product.name) || "No name available", 130
+      );
+
       dealItem.innerHTML = `
         <div class="product-card__content mt-20 flex-grow">
           <h6 class="title text-lg fw-semibold mt-8   text-line-1">
             <a href="product-details.html?id=${product._id}" class="link">${
-              product.name || "Unnamed Product"
+              truncatedName
             }</a>
           </h6> 
           <div class="flex-align gap-16 mt-10">
@@ -174,6 +178,10 @@ class TodaysDealsManager {
     return description.length > maxLength
       ? description.slice(0, maxLength) + "..."
       : description;
+  }
+
+  truncatedName(name, maxLength){
+    return name.length > maxLength ? name.slice(0, maxLength) + "..." : name;
   }
 
   stripHtmlTags(htmlString) {

@@ -1,6 +1,5 @@
-
 class ShippingAddressManager {
-  constructor(apiBaseUrl = "http://localhost:5002/api") {
+  constructor(apiBaseUrl = "https://api.gamescorner.ae/api") {
     this.apiBaseUrl = apiBaseUrl;
     this.webtoken = localStorage.getItem("webtoken");
     this.addresses = [];
@@ -21,7 +20,8 @@ class ShippingAddressManager {
     this.updateShippingAddress = this.updateShippingAddress.bind(this);
     this.deleteShippingAddress = this.deleteShippingAddress.bind(this);
     this.fetchShippingAddresses = this.fetchShippingAddresses.bind(this);
-    this.populateShippingAddressesContainer = this.populateShippingAddressesContainer.bind(this);
+    this.populateShippingAddressesContainer =
+      this.populateShippingAddressesContainer.bind(this);
     this.prepareEditAddress = this.prepareEditAddress.bind(this);
     this.closeEditModal = this.closeEditModal.bind(this);
 
@@ -64,7 +64,9 @@ class ShippingAddressManager {
     if (this.editForm) {
       this.editForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const addressId = this.editForm.querySelector('input[name="addressId"]').value;
+        const addressId = this.editForm.querySelector(
+          'input[name="addressId"]'
+        ).value;
         if (!addressId) {
           console.error("No address ID found in the form");
           return;
@@ -78,19 +80,21 @@ class ShippingAddressManager {
 
   toggleAddressForm() {
     const isHidden = this.addressFormSection.classList.contains("hidden");
-    
+
     if (isHidden) {
       this.addNewAddressBtn.classList.add("bg-gray-50");
     } else {
       this.addNewAddressBtn.classList.remove("bg-gray-50");
     }
-    
+
     this.addressFormSection.classList.toggle("hidden");
   }
 
   createAddressCard(address) {
     return `
-      <div class="delivery-address border p-4 mb-4 rounded-lg" data-address-id="${address._id}">
+      <div class="delivery-address border p-4 mb-4 rounded-lg" data-address-id="${
+        address._id
+      }">
         <div class="delivery-address__content flex justify-between">
           <div class="delivery-address__option flex items-center">
             <input 
@@ -104,7 +108,9 @@ class ShippingAddressManager {
                 ${address.name} , ${address.phoneNo}
               </div>
               <div class="delivery-address__address text-gray-600">
-                ${address.address}, ${address.city}, ${address.state}, ${address.country} - ${address.pinCode}
+                ${address.address}, ${address.city}, ${address.state}, ${
+      address.country
+    } - ${address.pinCode}
               </div>
             </div>
              <div class="delivery-address__actions flex space-x-4">
@@ -131,17 +137,18 @@ class ShippingAddressManager {
   populateShippingAddressesContainer(addresses) {
     this.addresses = addresses;
     if (!this.container) return;
-    
-    this.container.innerHTML = addresses.length === 0 
-      ? '<p class="text-gray-500">No addresses found</p>'
-      : addresses.map(address => this.createAddressCard(address)).join('');
-    
+
+    this.container.innerHTML =
+      addresses.length === 0
+        ? '<p class="text-gray-500">No addresses found</p>'
+        : addresses.map((address) => this.createAddressCard(address)).join("");
+
     this.attachCardEventListeners();
   }
 
   attachCardEventListeners() {
     // Add event listeners for edit buttons
-    this.container.querySelectorAll(".edit-btn").forEach(btn => {
+    this.container.querySelectorAll(".edit-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         const addressId = e.target.dataset.addressId;
         this.prepareEditAddress(addressId);
@@ -149,7 +156,7 @@ class ShippingAddressManager {
     });
 
     // Add event listeners for delete buttons
-    this.container.querySelectorAll(".delete-btn").forEach(btn => {
+    this.container.querySelectorAll(".delete-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         const addressId = e.target.dataset.addressId;
         this.deleteShippingAddress(addressId);
@@ -157,16 +164,19 @@ class ShippingAddressManager {
     });
 
     // Add listeners for delivery address radio buttons
-    this.container.querySelectorAll(".delivery-address__radio").forEach((radioButton) => {
-      radioButton.addEventListener("click", (e) => {
-        const addressId = e.target.closest('.delivery-address').dataset.addressId;
-        console.log("Selected address ID:", addressId);
+    this.container
+      .querySelectorAll(".delivery-address__radio")
+      .forEach((radioButton) => {
+        radioButton.addEventListener("click", (e) => {
+          const addressId =
+            e.target.closest(".delivery-address").dataset.addressId;
+          console.log("Selected address ID:", addressId);
+        });
       });
-    });
   }
 
   prepareEditAddress(addressId) {
-    const address = this.addresses.find(addr => addr._id === addressId);
+    const address = this.addresses.find((addr) => addr._id === addressId);
     if (!address) {
       console.error("Address not found");
       return;
@@ -177,11 +187,12 @@ class ShippingAddressManager {
     form.querySelector('input[name="addressId"]').value = addressId;
     form.querySelector('input[name="name"]').value = address.name || "";
     form.querySelector('input[name="phoneNo"]').value = address.phoneNo || "";
-    form.querySelector('textarea[name="address"]').value = address.address || "";
+    form.querySelector('textarea[name="address"]').value =
+      address.address || "";
     form.querySelector('input[name="city"]').value = address.city || "";
     form.querySelector('input[name="state"]').value = address.state || "";
     form.querySelector('input[name="pinCode"]').value = address.pinCode || "";
-    
+
     // Show popup
     this.popup.style.display = "flex";
   }
@@ -277,7 +288,7 @@ class ShippingAddressManager {
   async fetchShippingAddresses(query = "") {
     try {
       const url = new URL(`${this.apiBaseUrl}/shipping`);
-      if (query) url.searchParams.set('search', query);
+      if (query) url.searchParams.set("search", query);
 
       const response = await fetch(url, {
         method: "GET",
@@ -299,10 +310,6 @@ class ShippingAddressManager {
       alert(`Error: ${error.message}`);
     }
   }
-
-
-
-  
 }
 
 // Initialize the manager when the DOM is loaded

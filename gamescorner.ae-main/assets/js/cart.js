@@ -9,7 +9,7 @@ class CartManager {
     this.applyCouponButton = document.querySelector(".btn.btn-main");
     this.updateCartButton = document.querySelector(".text-lg.text-gray-500");
 
-    this.baseApiUrl = "http://localhost:5002/api";
+    this.baseApiUrl = "https://api.gamescorner.ae/api";
     this.initialize();
   }
 
@@ -499,7 +499,7 @@ class CartManager {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log("Cart data fetched successfully:", data);
 
@@ -556,12 +556,10 @@ class CartManager {
             const shippingRate = item.product?.shipping || 0;
             return total + shippingRate * item.product_quantity;
           }, 0);
-          
 
     // Calculate grand total
     const grandTotal =
       totalProductPrice - totalProductDiscount + totalShippingPrice + totalTax;
-      
 
     // Update the cart table with product rows
     if (this.cartTableBody) {
@@ -574,7 +572,7 @@ class CartManager {
     if (this.cartSidebar) {
       localStorage.setItem("shippingPrice", totalShippingPrice);
       localStorage.setItem("taxAmount", totalTax);
-      localStorage.setItem("grandTotalAmount", grandTotal);                         
+      localStorage.setItem("grandTotalAmount", grandTotal);
       this.cartSidebar.innerHTML = `
       
         <div class="cart-sidebar p-24 bg-color-three rounded-8 mb-24">

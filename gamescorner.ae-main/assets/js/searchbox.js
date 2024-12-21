@@ -17,7 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5002/api/product?tags=${encodeURIComponent(query)}`);
+      const response = await fetch(
+        `https://api.gamescorner.ae/api/product?tags=${encodeURIComponent(
+          query
+        )}`
+      );
       const data = await response.json();
 
       if (data.success && data.products.length > 0) {
@@ -33,7 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
         searchResults1.innerHTML = sortedTags
           .map(
             (tag) => `
-              <a href="search.html?tags=${encodeURIComponent(tag)}" class="dropdown-item">
+              <a href="search.html?tags=${encodeURIComponent(
+                tag
+              )}" class="dropdown-item">
                 ${tag}
               </a>
             `
@@ -41,12 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
           .join("");
         searchResults1.style.display = "block";
       } else {
-        searchResults1.innerHTML = '<span class="dropdown-item">No results found</span>';
+        searchResults1.innerHTML =
+          '<span class="dropdown-item">No results found</span>';
         searchResults1.style.display = "block";
       }
     } catch (error) {
       console.error("Error fetching search results:", error);
-      searchResults1.innerHTML = '<span class="dropdown-item">Error fetching results</span>';
+      searchResults1.innerHTML =
+        '<span class="dropdown-item">Error fetching results</span>';
       searchResults1.style.display = "block";
     }
   });
@@ -61,7 +69,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5002/api/product?tags=${encodeURIComponent(query)}`);
+      const response = await fetch(
+        `https://api.gamescorner.ae/api/product?tags=${encodeURIComponent(
+          query
+        )}`
+      );
       const data = await response.json();
 
       if (data.success && data.products.length > 0) {
@@ -77,7 +89,9 @@ document.addEventListener("DOMContentLoaded", () => {
         searchResults2.innerHTML = sortedTags
           .map(
             (tag) => `
-              <a href="search.html?tags=${encodeURIComponent(tag)}" class="dropdown-item">
+              <a href="search.html?tags=${encodeURIComponent(
+                tag
+              )}" class="dropdown-item">
                 ${tag}
               </a>
             `
@@ -85,12 +99,14 @@ document.addEventListener("DOMContentLoaded", () => {
           .join("");
         searchResults2.style.display = "block";
       } else {
-        searchResults2.innerHTML = '<span class="dropdown-item">No results found</span>';
+        searchResults2.innerHTML =
+          '<span class="dropdown-item">No results found</span>';
         searchResults2.style.display = "block";
       }
     } catch (error) {
       console.error("Error fetching search results:", error);
-      searchResults2.innerHTML = '<span class="dropdown-item">Error fetching results</span>';
+      searchResults2.innerHTML =
+        '<span class="dropdown-item">Error fetching results</span>';
       searchResults2.style.display = "block";
     }
   });
@@ -102,7 +118,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!query) return;
 
     try {
-      const response = await fetch(`http://localhost:5002/api/product?tags=${encodeURIComponent(query)}`);
+      const response = await fetch(
+        `https://api.gamescorner.ae/api/product?tags=${encodeURIComponent(
+          query
+        )}`
+      );
       const data = await response.json();
 
       if (data.success && data.products.length > 0) {
@@ -122,7 +142,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!query) return;
 
     try {
-      const response = await fetch(`http://localhost:5002/api/product?tags=${encodeURIComponent(query)}`);
+      const response = await fetch(
+        `https://api.gamescorner.ae/api/product?tags=${encodeURIComponent(
+          query
+        )}`
+      );
       const data = await response.json();
 
       if (data.success && data.products.length > 0) {

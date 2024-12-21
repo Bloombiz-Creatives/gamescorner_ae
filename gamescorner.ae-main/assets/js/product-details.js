@@ -12,7 +12,7 @@
 //   async function fetchProductDetails() {
 //     try {
 //       const response = await fetch(
-//         `http://localhost:5002/api/product/${productId}`
+//         `https://api.gamescorner.ae/api/product/${productId}`
 //       );
 
 //       // Check if response is okay
@@ -412,7 +412,7 @@
 //   async function fetchRelatedProducts(parentCategory) {
 //     try {
 //       const response = await fetch(
-//         `http://localhost:5002/api/productweb?parent_category=${encodeURIComponent(
+//         `https://api.gamescorner.ae/api/productweb?parent_category=${encodeURIComponent(
 //           parentCategory
 //         )}`
 //       );
@@ -819,7 +819,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function fetchProductDetails() {
     try {
       const response = await fetch(
-        ` http://localhost:5002/api/product/${productId}`
+        ` https://api.gamescorner.ae/api/product/${productId}`
       );
 
       if (!response.ok) {
@@ -1170,38 +1170,40 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateProductSpecifications(product) {
-    
     const getAttributeValue = (attrs) => {
       if (!attrs || !Array.isArray(attrs) || attrs.length === 0) {
         return "N/A";
       }
-  
-      return attrs.map(attr => {
-        // Get the attribute object from the nested structure
-        const attrObj = attr.attribute || attr;
-        const attrName = attrObj.name || "";
-        
-        // Get values from the value array
-        let attrValues = [];
-        if (attrObj.value && Array.isArray(attrObj.value)) {
-          attrValues = attrObj.value.map(v => v.value || v).filter(Boolean);
-        }
-  
-        return attrName && attrValues.length > 0
-          ? `${attrName}: ${attrValues.join(", ")}`
-          : null;
-      })
-      .filter(Boolean)
-      .join(" | ");
+
+      return attrs
+        .map((attr) => {
+          // Get the attribute object from the nested structure
+          const attrObj = attr.attribute || attr;
+          const attrName = attrObj.name || "";
+
+          // Get values from the value array
+          let attrValues = [];
+          if (attrObj.value && Array.isArray(attrObj.value)) {
+            attrValues = attrObj.value.map((v) => v.value || v).filter(Boolean);
+          }
+
+          return attrName && attrValues.length > 0
+            ? `${attrName}: ${attrValues.join(", ")}`
+            : null;
+        })
+        .filter(Boolean)
+        .join(" | ");
     };
-  
-    const aedPricing = 
+
+    const aedPricing =
       product.country_pricing?.find((p) => p.currency_code === "AED") ||
       product.country_pricing?.[0];
-  
+
     const specsList = document.querySelector(".product-dContent__box ul");
-    const colorSection = document.querySelector(".flex-between.align-items-start.flex-wrap.gap-16");
-  
+    const colorSection = document.querySelector(
+      ".flex-between.align-items-start.flex-wrap.gap-16"
+    );
+
     const specifications = [
       { label: "Product Type", value: product.product_type || "N/A" },
       { label: "Brand", value: product.brand?.[0]?.name || "N/A" },
@@ -1217,9 +1219,10 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       {
         label: "Color",
-        value: product.color?.length > 0
-          ? product.color.map((c) => c.name).join(", ")
-          : "N/A",
+        value:
+          product.color?.length > 0
+            ? product.color.map((c) => c.name).join(", ")
+            : "N/A",
       },
       {
         label: "Shipping Time",
@@ -1227,18 +1230,22 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       {
         label: "Shipping Price",
-        value: `AED ${aedPricing?.shipping_price || product.shipping_price || "N/A"}`,
+        value: `AED ${
+          aedPricing?.shipping_price || product.shipping_price || "N/A"
+        }`,
       },
       {
         label: "Tax",
-        value: `${aedPricing?.tax_percentage 
-          ? `${aedPricing.tax_percentage}%` 
-          : product.tax_percentage 
-          ? `${product.tax_percentage}%` 
-          : "N/A"}`,
+        value: `${
+          aedPricing?.tax_percentage
+            ? `${aedPricing.tax_percentage}%`
+            : product.tax_percentage
+            ? `${product.tax_percentage}%`
+            : "N/A"
+        }`,
       },
     ];
-  
+
     if (specsList) {
       specsList.innerHTML = specifications
         .map(
@@ -1256,7 +1263,7 @@ document.addEventListener("DOMContentLoaded", function () {
         )
         .join("");
     }
-  
+
     if (colorSection && product.color?.length > 0) {
       const colorLabelSpan = colorSection.querySelector("span.fw-medium");
       if (colorLabelSpan) {
@@ -1264,14 +1271,15 @@ document.addEventListener("DOMContentLoaded", function () {
           .map((color) => color.name || "N/A")
           .join(", ");
       }
-  
+
       const colorContainer = colorSection.querySelector(".color-list");
       if (colorContainer) {
         colorContainer.innerHTML = "";
         product.color.forEach((color) => {
           const colorButton = document.createElement("button");
           colorButton.type = "button";
-          colorButton.className = "color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle";
+          colorButton.className =
+            "color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle";
           colorButton.style.backgroundColor = color.color_code || "#000000";
           colorButton.title = color.name || "N/A";
           colorContainer.appendChild(colorButton);
@@ -1285,7 +1293,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function fetchRelatedProducts(parentCategory) {
     try {
       const response = await fetch(
-        `http://localhost:5002/api/productweb?parent_category=${encodeURIComponent(
+        `https://api.gamescorner.ae/api/productweb?parent_category=${encodeURIComponent(
           parentCategory
         )}`
       );
