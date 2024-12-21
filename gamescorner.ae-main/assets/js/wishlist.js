@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const wishlistContainer = document.querySelector('tbody');
     const clearCartButton = document.querySelector('.clear-section button');
-    const wishlistCountElement = document.getElementById('wishlistCount'); 
+    // const wishlistCountElement = document.getElementById('wishlistCount'); 
 
 
     // Fetch and render wishlist items
@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             renderWishlistItems(data.wishlist?.products || []); 
             updateWishlistIcons(data.wishlist?.products || []);  
-            // updateWishlistCount(data.wishlist?.products || 0);  
         } catch (error) {
             console.error('Error fetching wishlist:', error);
             showErrorMessage('Unable to load wishlist. Please try again.');
@@ -47,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         products.forEach(item => {
             const product = item.product || {};
-            console.log(product,'tttgyg');
             
             const productElement = document.createElement('tr');            
             productElement.innerHTML = `
@@ -94,10 +92,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateWishlistCount(count) {
-        if (wishlistCountElement) { 
-            wishlistCountElement.textContent = count ;
-            localStorage.setItem('wishlistCount', count);
-        }
+        // if (wishlistCountElement) { 
+        //     wishlistCountElement.textContent = count ;
+        //     localStorage.setItem('wishlistCount', count);
+        // }
+
+        const wishlistCountElements = document.querySelectorAll('#wishlistCount');
+        wishlistCountElements.forEach(element => {
+            element.textContent = count;
+        });
+        localStorage.setItem('wishlistCount', count);
     }
 
     // Remove individual item from wishlist
@@ -177,6 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    const storedWishlistCount = localStorage.getItem("wishlistCount") || "0";
+    updateWishlistCount(storedWishlistCount);
+
     const CarttCountElement = document.getElementById("CartCount");
     const storedCount = localStorage.getItem("cartCount") || "0";
     if (CarttCountElement) {
@@ -184,3 +192,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   
+
