@@ -52,20 +52,22 @@
     <!-- ==================== Search Box Start Here ==================== -->
     <form action="#" class="search-box">
         <button type="button"
-            class="search-box__close position-absolute inset-block-start-0 inset-inline-end-0 m-16 w-48 h-48 border border-gray-100 rounded-circle flex-center text-white hover-text-gray-800 hover-bg-white text-2xl transition-1">
-            <i class="ph ph-x"></i>
+          class="search-box__close position-absolute inset-block-start-0 inset-inline-end-0 m-16 w-48 h-48 border border-gray-100 rounded-circle flex-center text-white hover-text-gray-800 hover-bg-white text-2xl transition-1">
+          <i class="ph ph-x"></i>
         </button>
         <div class="container">
-            <div class="position-relative">
-                <input type="text" class="form-control py-16 px-24 text-xl rounded-pill pe-64"
-                    placeholder="Search for a product or brand">
-                <button type="submit"
-                    class="w-48 h-48 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8">
-                    <i class="ph ph-magnifying-glass"></i>
-                </button>
-            </div>
+          <div class="position-relative">
+            <input type="text" id="searchInput1" class="form-control py-16 px-24 text-xl rounded-pill pe-64"
+              placeholder="Search for a product" />
+            <button type="submit"
+              class="w-48 h-48 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8">
+              <i class="ph ph-magnifying-glass"></i>
+            </button>
+            <div id="searchResults1" class="dropdown-menu position-absolute w-100" style="display: none"></div>
+          </div>
         </div>
-    </form>
+      </form>
+
     <!-- ==================== Search Box End Here ==================== -->
 
     <!-- ==================== Mobile Menu Start Here ==================== -->
@@ -163,20 +165,18 @@
                 <!-- form location Start -->
                 <form action="#" class="flex-align flex-wrap form-location-wrapper">
                     <div class="search-category d-flex h-48 select-border-end-0 radius-end-0 search-form d-sm-flex d-none">
-                        <div class="search-form__wrapper position-relative">
-                            <input 
-                                type="text"
-                                id="searchInput"
-                                class="search-form__input common-input py-13 ps-16 pe-18 rounded-end-pill pe-44"
-                                placeholder="Search for a product ">
-                            <button type="submit"
-                                class="w-32 h-32 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8">
-                                <i class="ph ph-magnifying-glass"></i>
-                            </button>
-                            <div id="searchResults" class="dropdown-menu position-absolute w-100" style="display: none;"></div>
-                        </div>
+                      <div class="search-form__wrapper position-relative">
+                        <input type="text" id="searchInput2"
+                          class="search-form__input common-input py-13 ps-16 pe-18 rounded-end-pill pe-44"
+                          placeholder="Search for a product " />
+                        <button type="submit"
+                          class="w-32 h-32 bg-main-600 rounded-circle flex-center text-xl text-white position-absolute top-50 translate-middle-y inset-inline-end-0 me-8">
+                          <i class="ph ph-magnifying-glass"></i>
+                        </button>
+                        <div id="searchResults2" class="dropdown-menu position-absolute w-100" style="display: none"></div>
+                      </div>
                     </div>
-                </form>
+                  </form>
                 <!-- form location start -->
 
                 <!-- Header Middle Right start -->

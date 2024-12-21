@@ -1170,14 +1170,38 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateProductSpecifications(product) {
-    const aedPricing =
+    
+    const getAttributeValue = (attrs) => {
+      if (!attrs || !Array.isArray(attrs) || attrs.length === 0) {
+        return "N/A";
+      }
+  
+      return attrs.map(attr => {
+        // Get the attribute object from the nested structure
+        const attrObj = attr.attribute || attr;
+        const attrName = attrObj.name || "";
+        
+        // Get values from the value array
+        let attrValues = [];
+        if (attrObj.value && Array.isArray(attrObj.value)) {
+          attrValues = attrObj.value.map(v => v.value || v).filter(Boolean);
+        }
+  
+        return attrName && attrValues.length > 0
+          ? `${attrName}: ${attrValues.join(", ")}`
+          : null;
+      })
+      .filter(Boolean)
+      .join(" | ");
+    };
+  
+    const aedPricing = 
       product.country_pricing?.find((p) => p.currency_code === "AED") ||
       product.country_pricing?.[0];
+  
     const specsList = document.querySelector(".product-dContent__box ul");
-    const colorSection = document.querySelector(
-      ".flex-between.align-items-start.flex-wrap.gap-16"
-    );
-
+    const colorSection = document.querySelector(".flex-between.align-items-start.flex-wrap.gap-16");
+  
     const specifications = [
       { label: "Product Type", value: product.product_type || "N/A" },
       { label: "Brand", value: product.brand?.[0]?.name || "N/A" },
@@ -1187,91 +1211,77 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       { label: "Unit", value: product.unit || "N/A" },
       { label: "Weight", value: product.weight || "N/A" },
-      { label: "Attribute", value: product.attribute?.[0]?.name || "N/A" },
+      {
+        label: "Attributes",
+        value: getAttributeValue(product.attributes) || "N/A",
+      },
       {
         label: "Color",
         value: product.color?.length > 0
-          ? product.color.map((c) => c.name).join(", ") // Join all color names into a single string
+          ? product.color.map((c) => c.name).join(", ")
           : "N/A",
       },
       {
         label: "Shipping Time",
-        value: ` ${
-          aedPricing?.shipping_time || product.shipping_time || "N/A"
-        }`,
+        value: `${aedPricing?.shipping_time || product.shipping_time || "N/A"}`,
       },
       {
         label: "Shipping Price",
-        value: `AED ${
-          aedPricing?.shipping_price || product.shipping_price || "N/A"
-        }`,
+        value: `AED ${aedPricing?.shipping_price || product.shipping_price || "N/A"}`,
       },
       {
         label: "Tax",
-        value: `${
-          aedPricing?.tax_percentage
-            ? `${aedPricing.tax_percentage}%`
-            : product.tax_percentage
-            ? `${product.tax_percentage}%`
-            : "N/A"
-        }`,
+        value: `${aedPricing?.tax_percentage 
+          ? `${aedPricing.tax_percentage}%` 
+          : product.tax_percentage 
+          ? `${product.tax_percentage}%` 
+          : "N/A"}`,
       },
     ];
-
-    specsList.innerHTML = specifications
-      .map(
-        (spec) => `
+  
+    if (specsList) {
+      specsList.innerHTML = specifications
+        .map(
+          (spec) => `
             <li class="text-gray-400 mb-14 flex-align gap-14">
-                <span class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
-                    <i class="ph ph-check"></i>
-                </span>
-                <span class="text-heading fw-medium">
-                    ${spec.label}:
-                    <span class="text-gray-500">${spec.value}</span>
-                </span>
+              <span class="w-20 h-20 bg-main-50 text-main-600 text-xs flex-center rounded-circle">
+                <i class="ph ph-check"></i>
+              </span>
+              <span class="text-heading fw-medium">
+                ${spec.label}:
+                <span class="text-gray-500">${spec.value}</span>
+              </span>
             </li>
-        `
-      )
-      .join("");
-
-      if (colorSection) {
-        if (product.color && product.color.length > 0) {
-          // Update the color label with comma-separated color names
-          const colorLabelSpan = colorSection.querySelector("span.fw-medium");
-          if (colorLabelSpan) {
-            colorLabelSpan.textContent = product.color
-              .map((color) => color.name || "N/A")
-              .join(", ");
-          }
-      
-          // Clear the color container
-          const colorContainer = colorSection.querySelector(".color-list");
-          if (colorContainer) {
-            colorContainer.innerHTML = ""; // Clear existing colors
-      
-            // Loop through each color and add a button
-            product.color.forEach((color) => {
-              const colorButton = document.createElement("button");
-              colorButton.type = "button";
-              colorButton.className =
-                "color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle";
-              colorButton.style.backgroundColor = color.color_code || "#000000";
-              colorButton.title = color.name || "N/A";
-      
-              // Add the button to the container
-              colorContainer.appendChild(colorButton);
-            });
-          }
-          // Ensure the color section is visible
-          colorSection.style.display = "flex";
-        } else {
-          // Hide the color section if no colors are available
-          colorSection.style.display = "none";
-        }
+          `
+        )
+        .join("");
+    }
+  
+    if (colorSection && product.color?.length > 0) {
+      const colorLabelSpan = colorSection.querySelector("span.fw-medium");
+      if (colorLabelSpan) {
+        colorLabelSpan.textContent = product.color
+          .map((color) => color.name || "N/A")
+          .join(", ");
       }
-      
+  
+      const colorContainer = colorSection.querySelector(".color-list");
+      if (colorContainer) {
+        colorContainer.innerHTML = "";
+        product.color.forEach((color) => {
+          const colorButton = document.createElement("button");
+          colorButton.type = "button";
+          colorButton.className = "color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle";
+          colorButton.style.backgroundColor = color.color_code || "#000000";
+          colorButton.title = color.name || "N/A";
+          colorContainer.appendChild(colorButton);
+        });
+      }
+      colorSection.style.display = "flex";
+    } else if (colorSection) {
+      colorSection.style.display = "none";
+    }
   }
-
   async function fetchRelatedProducts(parentCategory) {
     try {
       const response = await fetch(
