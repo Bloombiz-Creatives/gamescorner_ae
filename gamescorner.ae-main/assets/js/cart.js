@@ -765,10 +765,24 @@ document.addEventListener("DOMContentLoaded", () => {
   new CartManager();
 });
 
+// document.addEventListener("DOMContentLoaded", () => {
+//   const wishlistCountElement = document.getElementById("CartwishlistCount");
+//   const storedCount = localStorage.getItem("wishlistCount") || "0";
+//   if (wishlistCountElement) {
+//     wishlistCountElement.textContent = storedCount;
+//   }
+// });
+
 document.addEventListener("DOMContentLoaded", () => {
-  const wishlistCountElement = document.getElementById("CartwishlistCount");
+  const wishlistCountBadge = document.getElementById("wishlistCountBadge");
+  const wishlistCountMenu = document.getElementById("wishlistCountMenu");
   const storedCount = localStorage.getItem("wishlistCount") || "0";
-  if (wishlistCountElement) {
-    wishlistCountElement.textContent = storedCount;
+  
+  // Update both counters
+  if (wishlistCountBadge) {
+      wishlistCountBadge.textContent = storedCount;
+  }
+  if (wishlistCountMenu) {
+      wishlistCountMenu.textContent = storedCount;
   }
 });
