@@ -9784,8 +9784,8 @@ input:focus-visible {
 /* parentcat-image */
 
 .parentcat-img {
-  max-width: 80px;
-  height: 80px;
+  max-width: 100%;
+  height: auto;
 }
 
 /* ADRRESS */
