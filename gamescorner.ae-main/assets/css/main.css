@@ -10138,3 +10138,53 @@ input:focus-visible {
   cursor: not-allowed; 
   box-shadow: none; 
 }
+
+
+
+/* attributes---------------------------------- */
+/* Add these styles to your CSS */
+#attributeModal .modal-content {
+  border-radius: 8px;
+}
+
+#attributeModal .form-select {
+  border-radius: 4px;
+  padding: 8px 12px;
+}
+
+#attributeModal .pricing {
+  margin-top: 8px;
+}
+
+#attributeModal .current-price {
+  /* font-size: 1.25rem; */
+  margin-bottom: 4px;
+}
+
+#attributeModal .current-price .currency {
+  font-size: 0.875rem;
+  margin-right: 4px;
+}
+
+#attributeModal .original-price {
+  font-size: 0.875rem;
+}
+
+#attributeModal .btn-warning {
+  background-color: #FFD814;
+  border-color: #FCD200;
+}
+
+#attributeModal .btn-warning:hover {
+  background-color: #F7CA00;
+  border-color: #F2C200;
+}
+
+.color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  border: 1px solid #ddd;
+}
