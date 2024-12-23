@@ -1076,9 +1076,10 @@
     <!-- main js -->
     <script src="assets/js/main.js"></script>
     <script src="assets/js/categories.js"></script>
-    <script src="assets/js/address.js"></script>
     <script src="assets/js/wishlist.js"></script>
-    
+    <script src="assets/js/order-checkout.js"></script>
+
+
     <!-- <script src="assets/js/cart.js"></script> -->
   </body>
   <script>
@@ -1113,8 +1114,6 @@
           const grandTotal = data.Total;
           const currency_code = data.currency_code
 
-          
-
           // Update the HTML elements with the fetched values
           document.querySelector(
             ".shipping-price"
@@ -1128,7 +1127,7 @@
 
 
           document.querySelector(
-            ".currency_code"
+            ".grand-total"
           ).textContent = `AED ${currency_code.toFixed(2)}`;
           
         })
