@@ -5,7 +5,7 @@ class CartManager {
     this.cartSidebar = document.querySelector(".cart-sidebar");
 
     // Form elements
-    this.couponInput = document.querySelector(".common-input");
+    this.couponInput = document.querySelector("couponCodeInput");
     this.applyCouponButton = document.querySelector(".btn.btn-main");
     this.updateCartButton = document.querySelector(".text-lg.text-gray-500");
 
@@ -38,7 +38,68 @@ class CartManager {
       )
       .forEach((element) => {
         element.replaceWith(element.cloneNode(true));
-      });
+      }); 
+
+    function applyCoupon(data) {
+      console.log("CFGFS");
+      const couponInput = document.querySelector("#couponCodeInput");
+      const couponCode = couponInput?.value.trim();
+      if (!couponCode) {
+      console.error("Coupon code is required");
+      return;
+      }
+      console.log("Coupon input element:", couponInput);
+      const { summaryy } = data;
+
+      if (!couponCode) {
+        console.error("Coupon code is required");
+        return;
+      }
+      // Update subtotal
+      const subtotalElement = this.cartSidebar?.querySelector(
+        ".text-gray-900.fw-semibold"
+      );
+      if (subtotalElement) {
+        subtotalElement.textContent = `AED ${summaryy.subtotal.toFixed(2)}`;
+      }
+
+      // Update discount
+      const discountElement = this.cartSidebar?.querySelector(
+        ".text-success.fw-semibold"
+      );
+      if (discountElement) {
+        discountElement.textContent = `- AED ${summaryy.totalDiscount.toFixed(
+          2
+        )}`;
+      }
+
+      // Update final price
+      const grandTotalElement = this.cartSidebar?.querySelector(".grand-total");
+      if (grandTotalElement) {
+        grandTotalElement.textContent = `AED ${summaryy.finalPrice.toFixed(2)}`;
+      }
+
+      // Add coupon info display
+      const couponInfoDiv = document.createElement("div");
+      couponInfoDiv.className = "mb-32 flex-between gap-8";
+      couponInfoDiv.innerHTML = `
+          <span class="text-gray-900 font-heading-two">Applied Coupon</span>
+          <span class="text-success fw-semibold">${
+            summaryy.appliedCoupon.code
+          } (${
+            summaryy.appliedCoupon.discountType === "percentage"
+          ? `${summaryy.appliedCoupon.discountValue}%`
+          : `AED ${summaryy.appliedCoupon.discountValue}`
+      })</span>
+        `;
+
+      console.log("Coupon applied successfully!");
+    }
+
+    // Add the event listener to the button
+    document
+      .querySelector(".btn-main")
+      .addEventListener("click", () => applyCoupon());
 
     // Quantity Minus Button
     document.querySelectorAll(".quantity_cart_minus").forEach((button) => {
@@ -86,6 +147,9 @@ class CartManager {
         this.removeItem(productId);
       });
     });
+    document
+      .querySelector(".btn-main")
+      .addEventListener("click", this.applyCoupon.bind(this));
 
     // Apply Coupon
     if (this.applyCouponButton) {
@@ -108,57 +172,60 @@ class CartManager {
 
   async applyCoupon() {
     try {
-      const couponCode = this.couponInput?.value?.trim();
-      if (!couponCode) {
-        this.showNotification("Please enter a coupon code", "error");
-        return;
-      }
+        const couponCode = document.querySelector("#couponCodeInput")?.value.trim();
+        if (!couponCode) {
+            this.showNotification("Please enter a coupon code", "error");
+            return;
+        }
 
-      const webtoken = localStorage.getItem("webtoken");
-      if (!webtoken) {
-        this.showNotification("Please login to apply coupon", "error");
-        return;
-      }
+        const webtoken = localStorage.getItem("webtoken");
+        if (!webtoken) {
+            this.showNotification("Please login to apply coupon", "error");
+            return;
+        }
 
-      // Get the currency code from the page or default to AED
-      const currency_code =
-        document.querySelector("[data-currency-code]")?.dataset?.currencyCode ||
-        "AED";
+        const currency_code =
+            document.querySelector("[data-currency-code]")?.dataset?.currencyCode || "AED";
 
-      const response = await fetch(`${this.baseApiUrl}/cart_coupon_apply`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${webtoken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          couponCode,
-          currency_code,
-        }),
-      });
+        const response = await fetch(`${this.baseApiUrl}/cart_coupon_apply`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${webtoken}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ couponCode, currency_code }),
+        });
 
-      const data = await response.json();
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to apply coupon");
+        }
 
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to apply coupon");
-      }
+        const data = await response.json();
 
-      this.updateUIAfterCoupon(data.data);
+        if (!data || !data.summary) {
+            throw new Error("Invalid response: Missing required data");
+        }
+        .3
 
-      this.showNotification("Coupon applied successfully!", "success");
+        this.updateUIAfterCoupon(data.summary);
+        this.showNotification("Coupon applied successfully!", "success");
 
-      this.couponInput.value = "";
+        const couponInput = document.querySelector("#couponCodeInput");
+        if (couponInput) couponInput.value = "";
+
     } catch (error) {
-      console.error("Error applying coupon:", error);
-      this.showNotification(error.message || "Failed to apply coupon", "error");
+        console.error("Error applying coupon:", error);
+        this.showNotification(error.message || "Failed to apply coupon", "error");
     }
-  }
+}
+  
 
   updateUIAfterCoupon(data) {
-    const { summary, cart } = data;
+    const { summary} = data;
 
     // Update subtotal
-    const subtotalElement = this.cartSidebar?.querySelector(
+    const subtotalElement = document.querySelector(
       ".text-gray-900.fw-semibold"
     );
     if (subtotalElement) {
@@ -166,15 +233,16 @@ class CartManager {
     }
 
     // Update discount
-    const discountElement = this.cartSidebar?.querySelector(
-      ".text-success.fw-semibold"
-    );
+    const discountElement = document.querySelector(".text-success.fw-semibold");
+    if (discountElement) {
+      discountElement.textContent = `- AED ${summary.totalDiscount.toFixed(2)}`;
+    }
     if (discountElement) {
       discountElement.textContent = `- AED ${summary.totalDiscount.toFixed(2)}`;
     }
 
     // Update final price
-    const grandTotalElement = this.cartSidebar?.querySelector(".grand-total");
+    const grandTotalElement = document.querySelector(".grand-total");
     if (grandTotalElement) {
       grandTotalElement.textContent = `AED ${summary.finalPrice.toFixed(2)}`;
     }
@@ -190,6 +258,21 @@ class CartManager {
         : `AED ${summary.appliedCoupon.discountValue}`
     })</span>
     `;
+
+    // Append to cart summary container
+    const cartSummaryContainer = document.querySelector(
+      ".cart-summary-container"
+    );
+    if (cartSummaryContainer) {
+      cartSummaryContainer.innerHTML = ""; // Clear previous coupon info
+      cartSummaryContainer.appendChild(couponInfoDiv);
+    }
+
+    console.log("Coupon applied successfully!");
+
+    document.querySelector(".btn-main").addEventListener("click", () => {
+      applyCoupon();
+    });
 
     // Insert coupon info before the total
     const totalContainer = this.cartSidebar
@@ -447,7 +530,7 @@ class CartManager {
       const token = localStorage.getItem("webtoken");
       if (!token) throw new Error("User is not authenticated.");
 
-      const response = await fetch(`${this.baseApiUrl}/web_cart`, {
+      const response = await fetch(`${this.baseApiUrl}/web_cart?currency_code=AED`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -570,10 +653,8 @@ class CartManager {
 
     // Update the cart summary in the sidebar
     if (this.cartSidebar) {
-      localStorage.setItem("shippingPrice", totalShippingPrice);
-      localStorage.setItem("taxAmount", totalTax);
-      localStorage.setItem("grandTotalAmount", grandTotal);
       this.cartSidebar.innerHTML = `
+      
       
         <div class="cart-sidebar p-24 bg-color-three rounded-8 mb-24">
           <div class="mb-32 flex-between gap-8">
@@ -615,8 +696,29 @@ class CartManager {
         </div>
       `;
     }
+    document
+      .querySelector(".btn-main")
+      .addEventListener("click", function (event) {
+        // Ensure this code is placed inside an appropriate DOMContentLoaded or equivalent event listener
+        const totalShippingPrice = 333; // Replace with actual calculation
+        const totalTax = 3333; // Replace with actual calculation
+        const grandTotal = 4444; // Replace with actual calculation
 
-    // Ensure event listeners are set up
+        // Ensure that these values are defined before saving to localStorage
+        if (
+          typeof totalShippingPrice !== "undefined" &&
+          typeof totalTax !== "undefined" &&
+          typeof grandTotal !== "undefined"
+        ) {
+          localStorage.setItem("shippingPrice", totalShippingPrice);
+          localStorage.setItem("taxAmount", totalTax);
+          localStorage.setItem("grandTotalAmount", grandTotal);
+        } else {
+          console.error("One or more values are undefined.");
+        }
+
+        // Allow navigation to the checkout page
+      }); // Ensure event listeners are set up
     this.setupEventListeners();
   }
 
@@ -777,12 +879,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const wishlistCountBadge = document.getElementById("wishlistCountBadge");
   const wishlistCountMenu = document.getElementById("wishlistCountMenu");
   const storedCount = localStorage.getItem("wishlistCount") || "0";
-  
+
   // Update both counters
   if (wishlistCountBadge) {
-      wishlistCountBadge.textContent = storedCount;
+    wishlistCountBadge.textContent = storedCount;
   }
   if (wishlistCountMenu) {
-      wishlistCountMenu.textContent = storedCount;
+    wishlistCountMenu.textContent = storedCount;
   }
 });
