@@ -1,5 +1,5 @@
 class OrderDetailsManager {
-  constructor(apiBaseUrl = "https://api.gamescorner.ae/api") {
+  constructor(apiBaseUrl = "http://localhost:5002/api") {
     this.apiBaseUrl = apiBaseUrl;
     this.webtoken = localStorage.getItem("webtoken");
     this.orderData = null;

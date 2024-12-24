@@ -228,32 +228,69 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   //set up quantity
+  // function setupQuantityHandlers() {
+  //   const quantityInput = document.querySelector(".quantity__input");
+  //   const minusBtn = document.querySelector(".quantity__minus");
+  //   const plusBtn = document.querySelector(".quantity__plus");
+
+  //   if (quantityInput && minusBtn && plusBtn) {
+  //     quantityInput.value = 1;
+
+  //     minusBtn.addEventListener("click", () => {
+  //       const currentValue = parseInt(quantityInput.value) || 1;
+  //       if (currentValue > 1) {
+  //         quantityInput.value = currentValue - 1;
+  //       }
+  //     });
+
+  //     plusBtn.addEventListener("click", () => {
+  //       const currentValue = parseInt(quantityInput.value) || 1;
+  //       quantityInput.value = currentValue + 1;
+  //     });
+
+  //     quantityInput.addEventListener("change", () => {
+  //       let value = parseInt(quantityInput.value) || 1;
+  //       if (value < 1) value = 1;
+  //       quantityInput.value = value;
+  //     });
+  //   }
+  // }
+
   function setupQuantityHandlers() {
     const quantityInput = document.querySelector(".quantity__input");
     const minusBtn = document.querySelector(".quantity__minus");
     const plusBtn = document.querySelector(".quantity__plus");
-
-    if (quantityInput && minusBtn && plusBtn) {
-      quantityInput.value = 1;
-
-      minusBtn.addEventListener("click", () => {
-        const currentValue = parseInt(quantityInput.value) || 1;
-        if (currentValue > 1) {
-          quantityInput.value = currentValue - 1;
-        }
-      });
-
-      plusBtn.addEventListener("click", () => {
-        const currentValue = parseInt(quantityInput.value) || 1;
-        quantityInput.value = currentValue + 1;
-      });
-
-      quantityInput.addEventListener("change", () => {
-        let value = parseInt(quantityInput.value) || 1;
-        if (value < 1) value = 1;
-        quantityInput.value = value;
-      });
-    }
+  
+    if (!quantityInput || !minusBtn || !plusBtn) return;
+  
+    // Remove any existing event listeners
+    const newMinusBtn = minusBtn.cloneNode(true);
+    const newPlusBtn = plusBtn.cloneNode(true);
+    minusBtn.parentNode.replaceChild(newMinusBtn, minusBtn);
+    plusBtn.parentNode.replaceChild(newPlusBtn, plusBtn);
+  
+    // Set initial value
+    quantityInput.value = 1;
+  
+    // Add new event listeners
+    newMinusBtn.addEventListener("click", () => {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      if (currentValue > 1) {
+        quantityInput.value = currentValue - 1;
+      }
+    });
+  
+    newPlusBtn.addEventListener("click", () => {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      quantityInput.value = currentValue + 1;
+    });
+  
+    // Handle direct input changes
+    quantityInput.addEventListener("change", () => {
+      let value = parseInt(quantityInput.value) || 1;
+      if (value < 1) value = 1;
+      quantityInput.value = value;
+    });
   }
 
   function updateProductDetails(product) {
