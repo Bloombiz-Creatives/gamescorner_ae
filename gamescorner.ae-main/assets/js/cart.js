@@ -23,6 +23,32 @@ class CartManager {
     }
   }
 
+  showSuccess(message) {
+    const alert = document.createElement("div");
+    alert.className = "alert alert-success position-fixed top-0 end-0 m-3";
+    alert.style.zIndex = "9999";
+    alert.innerHTML = `
+      <div class="d-flex align-items-center">
+        <i class="ph ph-check-circle me-2"></i>
+        <span>${message}</span>
+      </div>`;
+    document.body.appendChild(alert);
+    setTimeout(() => alert.remove(), 3000);
+  }
+
+  showError(message) {
+    const alert = document.createElement("div");
+    alert.className = "alert alert-danger position-fixed top-0 end-0 m-3";
+    alert.style.zIndex = "9999";
+    alert.innerHTML = `
+      <div class="d-flex align-items-center">
+        <i class="ph ph-x-circle me-2"></i>
+        <span>${message}</span>
+      </div>`;
+    document.body.appendChild(alert);
+    setTimeout(() => alert.remove(), 3000);
+  }
+
   updateProductCount(count) {
     const productCountElement = document.getElementById("CartproductCount");
     if (productCountElement) {
@@ -206,17 +232,16 @@ class CartManager {
         if (!data || !data.summary) {
             throw new Error("Invalid response: Missing required data");
         }
-        .3
 
         this.updateUIAfterCoupon(data.summary);
-        this.showNotification("Coupon applied successfully!", "success");
+        this.showSuccess("Coupon applied successfully!", "success");
 
         const couponInput = document.querySelector("#couponCodeInput");
         if (couponInput) couponInput.value = "";
 
     } catch (error) {
         console.error("Error applying coupon:", error);
-        this.showNotification(error.message || "Failed to apply coupon", "error");
+        this.showError(error.message || "Failed to apply coupon", "error");
     }
 }
   
@@ -484,7 +509,7 @@ class CartManager {
         ".cart-sidebar .text-success.fw-semibold"
       );
       if (discountElement) {
-        discountElement.textContent = `- AED ${totalProductDiscount.toFixed(
+        discountElement.textContent = `AED ${totalProductDiscount.toFixed(
           2
         )}`;
       }
@@ -665,7 +690,7 @@ class CartManager {
           </div>
           <div class="mb-32 flex-between gap-8">
             <span class="text-gray-900 font-heading-two">Product Discount</span>
-            <span class="text-success fw-semibold discount">- AED ${totalProductDiscount.toFixed(
+            <span class="text-success fw-semibold discount">AED${totalProductDiscount.toFixed(
               2
             )}</span>
           </div>
@@ -691,7 +716,17 @@ class CartManager {
           </div>
           </div>
           
+     <div>
+
+     </div>
+
+
+
           <div>
+ <button href="total-discount.html" class="btn btn-main mt-16 py-18 w-100 rounded-8">
+    
+  </button>
+  
           <a  href="checkout.html" class="btn btn-main mt-40 py-18 w-100 rounded-8">Proceed to checkout</a>
         </div>
       `;
@@ -867,13 +902,6 @@ document.addEventListener("DOMContentLoaded", () => {
   new CartManager();
 });
 
-// document.addEventListener("DOMContentLoaded", () => {
-//   const wishlistCountElement = document.getElementById("CartwishlistCount");
-//   const storedCount = localStorage.getItem("wishlistCount") || "0";
-//   if (wishlistCountElement) {
-//     wishlistCountElement.textContent = storedCount;
-//   }
-// });
 
 document.addEventListener("DOMContentLoaded", () => {
   const wishlistCountBadge = document.getElementById("wishlistCountBadge");
