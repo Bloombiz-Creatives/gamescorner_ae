@@ -329,16 +329,24 @@ class ProductListing {
                 params.append('brand', this.selectedFilters.brand);
             }
 
+
             if (sortFilter) {
                 const sortValue = sortFilter.value.toLowerCase();
-                if (sortValue === 'price-low') {
-                    params.append('sort', 'price_asc');
-                } else if (sortValue === 'price-high') {
-                    params.append('sort', 'price_desc');
-                } else if (sortValue === 'featured') {
-                    params.append('featured', 'true');
-                } else if (sortValue === "today's deal") {
-                    params.append('todaysDeal', 'true');
+                switch (sortValue) {
+                    case 'price-low':
+                        params.append('sort', 'discount_asc');
+                        break;
+                    case 'price-high':
+                        params.append('sort', 'discount_desc');
+                        break;
+                    case 'featured':
+                        params.append('featured', 'true');
+                        break;
+                    case "today's deal":
+                        params.append('todaysDeal', 'true');
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -350,7 +358,13 @@ class ProductListing {
             const data = await response.json();
 
             if (data.success) {
-                this.allProducts = data.products;
+                // this.allProducts = data.products;
+                if (sortFilter && sortFilter.value !== 'default') {
+                    this.allProducts = this.sortProducts(data.products, sortFilter.value.toLowerCase());
+                } else {
+                    this.allProducts = data.products;
+                }
+                
                 this.totalProducts = this.allProducts.count || this.allProducts.length;
                 this.renderProducts(this.getPaginatedProducts());
                 this.renderPagination();
@@ -369,8 +383,11 @@ class ProductListing {
             brand: '',
         };
         document.querySelectorAll('input[type="radio"]').forEach(input => input.checked = false);
-        const sortFilter = document.getElementById('sorting');
-        if (sortFilter) sortFilter.value = '1';
+       
+        const sortFilter = document.getElementById('sortFilter');
+        if (sortFilter) {
+            sortFilter.value = 'default'; 
+        }
 
         window.scrollTo({
             top: 0,
@@ -382,25 +399,50 @@ class ProductListing {
     }
 
     sortProducts(products, sortMethod) {
+        const productsArray = Array.isArray(products) ? products : [];
+        
         switch (sortMethod) {
             case 'price-low':
-                return [...products].sort((a, b) => this.extractPrice(a) - this.extractPrice(b));
+                return productsArray.sort((a, b) => {
+                    const priceA = this.extractDiscount(a);
+                    const priceB = this.extractDiscount(b);
+                    return priceA - priceB;
+                });
+                
             case 'price-high':
-                return [...products].sort((a, b) => this.extractPrice(b) - this.extractPrice(a));
+                return productsArray.sort((a, b) => {
+                    const priceA = this.extractDiscount(a);
+                    const priceB = this.extractDiscount(b);
+                    return priceB - priceA;
+                });
+                
             case 'featured':
-                return [...products].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+                return productsArray.sort((a, b) => {
+                    if (a.featured && !b.featured) return -1;
+                    if (!a.featured && b.featured) return 1;
+                    return 0;
+                });
+                
             default:
-                return products;
+                return productsArray;
         }
     }
 
-    extractPrice(product) {
-        if (product.country_pricing?.[0]?.price) {
-            return parseFloat(product.country_pricing[0].price) || 0;
+    extractDiscount(product) {
+        if (!product || !product.country_pricing) return 0;
+        
+        const aedPricing = product.country_pricing.find(
+            pricing => pricing && pricing.currency_code === 'AED'
+        );
+        
+        if (aedPricing && aedPricing.discount) {
+            const discount = parseFloat(aedPricing.discount);
+            return isNaN(discount) ? 0 : discount;
         }
-        const priceMatch = product.description?.match(/\$(\d+(\.\d{1,2})?)/);
-        return priceMatch ? parseFloat(priceMatch[1]) : 0;
+        
+        return 0;
     }
+    
 
     renderProducts(products) {
         const grid = document.getElementById('productGrid');
@@ -435,13 +477,11 @@ class ProductListing {
                     <a href="product-details.html" class="link text-line-2">${product.name}</a>
                 </h6>
                 <div class="product-card__price my-20">
-                      <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">AED ${price}</span>
-                      <span class="text-heading text-md fw-semibold ">AED ${discount}<span
+                      <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">${currencyCode} ${price}</span>
+                      <span class="text-heading text-md fw-semibold ">${currencyCode} ${discount}<span
                       class="text-gray-500 fw-normal"></span> </span>
                  </div>
-                  <a href="" class="product-card__cart btn bg-gray-50 text-heading hover-bg-main-600 hover-text-white py-11 px-24 rounded-8 flex-center gap-8 fw-medium" tabindex="0" data-product-id="${product._id}" data-product-price="${price}" data-product-discount="${discount}" data-product-currencycode="${currencyCode}" data-product-quantity="1"  onClick="handleAddToCart(event)">
-                        Add To Cart <i class="ph ph-shopping-cart"></i>
-                    </a>
+                
                 </div>
             </div>
                 
@@ -535,7 +575,7 @@ class ProductListing {
         if (container) {
             container.innerHTML = `
                 <div class="text-red-500 p-4">
-                    Unable to load data. Please try again later.
+                    No Products Found!.
                 </div>
             `;
         }
@@ -582,7 +622,7 @@ function handleAddToCart(event) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${webtoken}` // Ensure this matches your backend expectation
+            'Authorization': `Bearer ${webtoken}` 
         },
         body: JSON.stringify(productData),
     })
