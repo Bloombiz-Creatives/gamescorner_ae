@@ -1,99 +1,158 @@
-// document.addEventListener('DOMContentLoaded', () => {
-//     const shopButtons = document.querySelectorAll('.shop-now');
-
-//     shopButtons.forEach(button => {
-//         button.addEventListener('click', async (event) => {
-//             event.preventDefault();
-
-//             const categoryElement = button.closest('.promotional-banner-item')
-//                 .querySelector('.promotional-banner-item__title');
-//             const categoryName = categoryElement.textContent.trim();
-
-//             try {
-//                 const response = await fetch('http://localhost:5002/api/category');
-
-//                 if (!response.ok) {
-//                     throw new Error(`HTTP error! status: ${response.status}`);
-//                 }
-
-//                 const data = await response.json();
-//                 const categories = data.categories;
-
-//                 const category = categories.find(
-//                     cat => cat.parent_category.toLowerCase() === categoryName.toLowerCase()
-//                 );
-
-//                 if (category) {
-//                     // Navigate to the category page
-//                     window.location.href = `/shop.html?category=${category._id}`;
-//                 } else {
-//                     console.error('Category not found');
-//                     // Fallback to default shop page
-//                     window.location.href = '/shop.html';
-//                 }
-//             } catch (error) {
-//                 console.error('Error fetching category data:', error);
-//                 alert('Failed to load category data. Please try again later.');
-//             }
-//         });
-//     });
-// });
-
 document.addEventListener('DOMContentLoaded', () => {
     const shopButtons = document.querySelectorAll('.shop-now');
+    
+    // Cache for category data to avoid multiple API calls
+    let categoryCache = null;
+    
+    // Function to fetch and cache categories
+    async function fetchCategories() {
+        if (categoryCache) {
+            return categoryCache;
+        }
 
+        try {
+            const response = await fetch('http://localhost:5002/api/category');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            categoryCache = data.categories;
+            return categoryCache;
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            throw error;
+        }
+    }
+
+    // Function to find category by name
+    function findCategory(categories, searchName) {
+        // Normalize the search name
+        const normalizedSearch = searchName.toLowerCase().trim();
+
+        // First try to find as parent category
+        let category = categories.find(cat => 
+            cat.parent_category.toLowerCase().trim() === normalizedSearch
+        );
+
+        // If not found as parent, search in subcategories
+        if (!category) {
+            category = categories.find(cat => 
+                cat.name.some(subCat => 
+                    subCat.value.toLowerCase().trim() === normalizedSearch
+                )
+            );
+        }
+
+        return category;
+    }
+
+    // Function to find subcategory by name
+    function findSubcategory(category, subcategoryName) {
+        if (!category || !category.name) return null;
+        
+        return category.name.find(subCat => 
+            subCat.value.toLowerCase().trim() === subcategoryName.toLowerCase().trim()
+        );
+    }
+
+    // Function to handle navigation
+    function navigateToShop(categoryId, subcategoryId = null) {
+        const baseUrl = '/shop.html';
+        const params = new URLSearchParams();
+        
+        if (categoryId) {
+            params.append('category', categoryId);
+        }
+        
+        if (subcategoryId) {
+            params.append('subcategory', subcategoryId);
+        }
+
+        const url = params.toString() 
+            ? `${baseUrl}?${params.toString()}`
+            : baseUrl;
+
+        window.location.href = url;
+    }
+
+    // Handle loading state
+    function setLoadingState(button, isLoading) {
+        if (isLoading) {
+            button.classList.add('loading');
+            button.disabled = true;
+        } else {
+            button.classList.remove('loading');
+            button.disabled = false;
+        }
+    }
+
+    // Setup click handlers for shop buttons
     shopButtons.forEach(button => {
         button.addEventListener('click', async (event) => {
             event.preventDefault();
-
-            const categoryElement = button.closest('.promotional-banner-item')
-                .querySelector('.promotional-banner-item__title');
-            const categoryName = categoryElement.textContent.trim();
+            setLoadingState(button, true);
 
             try {
-                const response = await fetch('http://localhost:5002/api/category');
+                // Get category name from data attribute or title
+                const categoryElement = button.closest('.promotional-banner-item')
+                    .querySelector('.promotional-banner-item__title');
+                const categoryName = categoryElement.textContent.trim();
+                const dataCategory = button.dataset.category;
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                // Fetch categories
+                const categories = await fetchCategories();
+
+                // Try to find the category
+                let category;
+                if (dataCategory) {
+                    // First try using data-category attribute
+                    category = findCategory(categories, dataCategory);
                 }
-
-                const data = await response.json();
-                const categories = data.categories;
-
-                // First check if it's a parent category
-                let category = categories.find(
-                    cat => cat.parent_category.toLowerCase().trim() === categoryName.toLowerCase()
-                );
-
-                // If not found as parent category, check subcategories
                 if (!category) {
-                    category = categories.find(cat => 
-                        cat.name.some(subCat => 
-                            subCat.value.toLowerCase() === categoryName.toLowerCase()
-                        )
-                    );
+                    // Fall back to title text if data-category didn't match
+                    category = findCategory(categories, categoryName);
                 }
 
                 if (category) {
-                    // If it's a gaming chair, find the specific subcategory ID
-                    if (categoryName.toLowerCase() === 'gaming chair') {
-                        const gamingChairSubcategory = category.name.find(
-                            subCat => subCat.value.toLowerCase() === 'gaming chairs'
-                        );
-                        if (gamingChairSubcategory) {
-                            window.location.href = `/shop.html?category=${category._id}&subcategory=${gamingChairSubcategory._id}`;
+                    // Special handling for specific categories
+                    if (categoryName.toLowerCase().includes('gaming chair')) {
+                        const subcategory = findSubcategory(category, 'gaming chairs');
+                        if (subcategory) {
+                            navigateToShop(category._id, subcategory._id);
                             return;
                         }
                     }
-                    // For other categories, use the parent category ID
-                    window.location.href = `/shop.html?category=${category._id}`;
+
+                    // For monitors category
+                    if (categoryName.toLowerCase().includes('monitor')) {
+                        const subcategory = findSubcategory(category, 'monitors');
+                        if (subcategory) {
+                            navigateToShop(category._id, subcategory._id);
+                            return;
+                        }
+                    }
+
+                    // Default navigation with just category ID
+                    navigateToShop(category._id);
                 } else {
-                    console.error('Category not found');
-                    window.location.href = '/shop.html';
+                    console.warn(`Category not found for: ${categoryName}`);
+                    navigateToShop(); // Navigate to shop without parameters
                 }
             } catch (error) {
-                console.error('Error fetching category data:', error);
-                alert('Failed to load category data. Please try again later.');
+                console.error('Error processing category navigation:', error);
+                // Show user-friendly error message
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message text-danger mt-2';
+                errorMessage.textContent = 'Unable to load category. Please try again later.';
+                button.parentNode.appendChild(errorMessage);
+                
+                // Remove error message after 3 seconds
+                setTimeout(() => {
+                    errorMessage.remove();
+                }, 3000);
+            } finally {
+                setLoadingState(button, false);
             }
         });
     });
