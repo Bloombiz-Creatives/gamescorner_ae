@@ -419,6 +419,12 @@
             <div class="order-summary border border-gray-100 rounded-8 px-24 py-40 mt-24">
 
               <div class="order-summary">
+
+                <div class="mb-32 flex-between gap-8">
+                  <img src="" alt="product image" class="order-img table-product__thumb border border-gray-100 rounded-8 flex-center">
+                  <span class="text-gray-900  product-name" style="font-size: 12px;" ></span>
+                </div>
+
                 <div class="mb-32 flex-between gap-8">
                   <span class="text-gray-900 font-heading-two text-xl fw-semibold">Price</span>
                   <span class="text-gray-900 fw-semibold discount-price">AED 0.00</span>
@@ -708,7 +714,8 @@
 
         <div class="footer-item">
           <h6 class="">Shop on The Go</h6>
-          <p class="mb-16">Marketpro App is available. Get it now</p>
+          <p class="mb-16">Games Corner is available. Get it now
+          </p>
           <div class="flex-align gap-8 my-32">
             <a href="#" class="">
               <img src="assets/images/thumbs/store-img1.png" alt="" />
@@ -788,39 +795,4 @@
 
   <!-- <script src="assets/js/cart.js"></script> -->
 </body>
-<!-- <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const orderData = JSON.parse(localStorage.getItem("orderData"));
-
-    if (!orderData) {
-      console.error("No order data found in localStorage");
-      return;
-    }
-
-    try {
-      const shippingPrice = orderData.totalShippingPrice;
-      const taxAmount = orderData.totalTax;
-      const grandTotal = orderData.Total;
-      const currency_code = orderData.currency_code || "AED";
-
-      const shippingPriceElement = document.querySelector(".shipping-price");
-      const taxAmountElement = document.querySelector(".tax-amount");
-      const grandTotalElement = document.querySelector(".grand-total");
-
-      if (shippingPriceElement) {
-        shippingPriceElement.textContent = `${currency_code} ${shippingPrice.toFixed(2)}`;
-      }
-      if (taxAmountElement) {
-        taxAmountElement.textContent = `${currency_code} ${taxAmount.toFixed(2)}`;
-      }
-      if (grandTotalElement) {
-        grandTotalElement.textContent = `${currency_code} ${grandTotal.toFixed(2)}`;
-      }
-    } catch (error) {
-      console.error("Error processing order data:", error);
-    }
-  });
-
-</script> -->
-
 </html>

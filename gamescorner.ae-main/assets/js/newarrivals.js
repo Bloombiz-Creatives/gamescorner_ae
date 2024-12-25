@@ -1,6 +1,6 @@
 
 class NewArrivalsManager {
-  constructor(apiBaseUrl = "http://localhost:5002/api") {
+  constructor(apiBaseUrl = "https://api.gamescorner.ae/api") {
     this.apiBaseUrl = apiBaseUrl;
     this.webtoken = localStorage.getItem("webtoken");
     this.products = {};
