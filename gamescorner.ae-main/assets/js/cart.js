@@ -64,68 +64,7 @@ class CartManager {
       )
       .forEach((element) => {
         element.replaceWith(element.cloneNode(true));
-      }); 
-
-    function applyCoupon(data) {
-      console.log("CFGFS");
-      const couponInput = document.querySelector("#couponCodeInput");
-      const couponCode = couponInput?.value.trim();
-      if (!couponCode) {
-      console.error("Coupon code is required");
-      return;
-      }
-      console.log("Coupon input element:", couponInput);
-      const { summaryy } = data;
-
-      if (!couponCode) {
-        console.error("Coupon code is required");
-        return;
-      }
-      // Update subtotal
-      const subtotalElement = this.cartSidebar?.querySelector(
-        ".text-gray-900.fw-semibold"
-      );
-      if (subtotalElement) {
-        subtotalElement.textContent = `AED ${summaryy.subtotal.toFixed(2)}`;
-      }
-
-      // Update discount
-      const discountElement = this.cartSidebar?.querySelector(
-        ".text-success.fw-semibold"
-      );
-      if (discountElement) {
-        discountElement.textContent = `- AED ${summaryy.totalDiscount.toFixed(
-          2
-        )}`;
-      }
-
-      // Update final price
-      const grandTotalElement = this.cartSidebar?.querySelector(".grand-total");
-      if (grandTotalElement) {
-        grandTotalElement.textContent = `AED ${summaryy.finalPrice.toFixed(2)}`;
-      }
-
-      // Add coupon info display
-      const couponInfoDiv = document.createElement("div");
-      couponInfoDiv.className = "mb-32 flex-between gap-8";
-      couponInfoDiv.innerHTML = `
-          <span class="text-gray-900 font-heading-two">Applied Coupon</span>
-          <span class="text-success fw-semibold">${
-            summaryy.appliedCoupon.code
-          } (${
-            summaryy.appliedCoupon.discountType === "percentage"
-          ? `${summaryy.appliedCoupon.discountValue}%`
-          : `AED ${summaryy.appliedCoupon.discountValue}`
-      })</span>
-        `;
-
-      console.log("Coupon applied successfully!");
-    }
-
-    // Add the event listener to the button
-    document
-      .querySelector(".btn-main")
-      .addEventListener("click", () => applyCoupon());
+      });
 
     // Quantity Minus Button
     document.querySelectorAll(".quantity_cart_minus").forEach((button) => {
@@ -142,7 +81,11 @@ class CartManager {
           if (currentValue > 1) {
             currentValue--;
             quantityInput.value = currentValue;
-            this.updateProductQuantity(quantityInput);
+
+            // Call method to update quantity
+            if (typeof this.updateProductQuantity === "function") {
+              this.updateProductQuantity(quantityInput);
+            }
           }
         }
       });
@@ -195,94 +138,98 @@ class CartManager {
   }
 
   // Apply coupon to the cart
-
+ 
   async applyCoupon() {
     try {
-        const couponCode = document.querySelector("#couponCodeInput")?.value.trim();
-        if (!couponCode) {
-            this.showNotification("Please enter a coupon code", "error");
-            return;
-        }
+      if (this.isCouponApplied) {
+        this.showNotification("Coupon has already been applied", "error");
+        return;
+      }
 
-        const webtoken = localStorage.getItem("webtoken");
-        if (!webtoken) {
-            this.showNotification("Please login to apply coupon", "error");
-            return;
-        }
+      const couponCodeInput = document.querySelector("#couponCodeInput");
+      const couponCode = couponCodeInput?.value.trim();
+      const applyCouponButton = document.querySelector(".btn-main");
 
-        const currency_code =
-            document.querySelector("[data-currency-code]")?.dataset?.currencyCode || "AED";
+      if (!couponCode) {
+        this.showNotification("Please enter a coupon code", "error");
+        return;
+      }
 
-        const response = await fetch(`${this.baseApiUrl}/cart_coupon_apply`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${webtoken}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ couponCode, currency_code }),
-        });
+      const webtoken = localStorage.getItem("webtoken");
+      if (!webtoken) {
+        this.showNotification("Please login to apply coupon", "error");
+        return;
+      }
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Failed to apply coupon");
-        }
+      const currencyCodeElement = document.querySelector("[data-currency-code]");
+      const currency_code = currencyCodeElement?.dataset?.currencyCode || "AED";
 
-        const data = await response.json();
+      const response = await fetch(`${this.baseApiUrl}/cart_coupon_apply`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${webtoken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          couponCode,
+          currency_code,
+          orderId: this.orderId,
+        }),
+      });
 
-        if (!data || !data.summary) {
-            throw new Error("Invalid response: Missing required data");
-        }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to apply coupon");
+      }
 
-        this.updateUIAfterCoupon(data.summary);
-        this.showSuccess("Coupon applied successfully!", "success");
+      const data = await response.json();
 
-        const couponInput = document.querySelector("#couponCodeInput");
-        if (couponInput) couponInput.value = "";
+      if (data.message === "This coupon has already been applied") {
+        this.showNotification("This coupon has already been applied", "error");
+        return;
+      }
+
+      this.isCouponApplied = true;
+
+      localStorage.setItem("appliedCoupon", couponCode);
+
+      // Update the UI to reflect the applied coupon
+      this.updateUIAfterCoupon(data);
+      this.showNotification("Coupon applied successfully!", "success");
+
+      if (applyCouponButton) {
+        applyCouponButton.textContent = "Applied";
+        applyCouponButton.disabled = true;
+        applyCouponButton.classList.add("btn-success");
+      }
+
+      // Clear the coupon input field after application
+      if (couponCodeInput) couponCodeInput.value = "";
 
     } catch (error) {
-        console.error("Error applying coupon:", error);
-        this.showError(error.message || "Failed to apply coupon", "error");
+      console.error("Error applying coupon:", error);
+      this.showNotification("An error occurred while applying the coupon", "error");
     }
-}
-  
+  }
+
 
   updateUIAfterCoupon(data) {
-    const { summary} = data;
+    console.log("Update UI after coupon:", data);
+    const summary = data;
+    console.log(("summery", summary));
 
-    // Update subtotal
-    const subtotalElement = document.querySelector(
-      ".text-gray-900.fw-semibold"
-    );
-    if (subtotalElement) {
-      subtotalElement.textContent = `AED ${summary.subtotal.toFixed(2)}`;
+    // Ensure summary is present
+    if (!summary) {
+      console.error("Summary data is missing!");
+      return;
     }
-
-    // Update discount
-    const discountElement = document.querySelector(".text-success.fw-semibold");
-    if (discountElement) {
-      discountElement.textContent = `- AED ${summary.totalDiscount.toFixed(2)}`;
+    const finalPriceButton = document.querySelector(".apply-coupon-btn");
+    if (finalPriceButton) {
+      finalPriceButton.textContent = `AED ${summary.data.summary.finalPrice}`;
+      finalPriceButton.style.display = "block";
     }
-    if (discountElement) {
-      discountElement.textContent = `- AED ${summary.totalDiscount.toFixed(2)}`;
-    }
-
-    // Update final price
-    const grandTotalElement = document.querySelector(".grand-total");
-    if (grandTotalElement) {
-      grandTotalElement.textContent = `AED ${summary.finalPrice.toFixed(2)}`;
-    }
-
-    // Add coupon info display
-    const couponInfoDiv = document.createElement("div");
-    couponInfoDiv.className = "mb-32 flex-between gap-8";
-    couponInfoDiv.innerHTML = `
-      <span class="text-gray-900 font-heading-two">Applied Coupon</span>
-      <span class="text-success fw-semibold">${summary.appliedCoupon.code} (${
-      summary.appliedCoupon.discountType === "percentage"
-        ? `${summary.appliedCoupon.discountValue}%`
-        : `AED ${summary.appliedCoupon.discountValue}`
-    })</span>
-    `;
+   
+   
 
     // Append to cart summary container
     const cartSummaryContainer = document.querySelector(
@@ -299,16 +246,7 @@ class CartManager {
       applyCoupon();
     });
 
-    // Insert coupon info before the total
-    const totalContainer = this.cartSidebar
-      ?.querySelector(".grand-total")
-      ?.closest(".flex-between")?.parentElement;
-    if (totalContainer) {
-      totalContainer.insertBefore(
-        couponInfoDiv,
-        totalContainer.lastElementChild
-      );
-    }
+   
 
     // Store coupon data in localStorage for persistence
     localStorage.setItem(
@@ -324,7 +262,6 @@ class CartManager {
       const subtotalElement = row.querySelector("td:nth-child(5) .h6");
 
       if (priceElement && subtotalElement) {
-        // Extract price, removing 'AED: ' prefix and parsing to float
         const price =
           parseFloat(priceElement.textContent.replace("AED: ", "")) || 0;
         const quantity = parseInt(quantityInput.value);
@@ -355,8 +292,6 @@ class CartManager {
     let shippingTotal = 0;
 
     document.querySelectorAll("tr.cart-item").forEach((item) => {
-      // Get the quantity and unit price
-
       const quantity =
         parseFloat(item.querySelector(".quantity").textContent) || 0;
 
@@ -364,7 +299,6 @@ class CartManager {
         item.querySelector(".unit-price span").textContent.replace("$", "")
       );
 
-      // Calculate the subtotal for this item (quantity * unit price)
       const subtotal = quantity * unitPrice;
 
       // Accumulate totals
@@ -382,8 +316,6 @@ class CartManager {
     if (cartTotalElement) {
       cartTotalElement.textContent = `AED ${total.toFixed(2)}`;
     }
-
-    // Optional: Update other summary elements
     const productTotalElement = document.querySelector(".product-total");
 
     const discountTotalElement = document.querySelector(".discount-total");
@@ -509,9 +441,7 @@ class CartManager {
         ".cart-sidebar .text-success.fw-semibold"
       );
       if (discountElement) {
-        discountElement.textContent = `AED ${totalProductDiscount.toFixed(
-          2
-        )}`;
+        discountElement.textContent = `AED ${totalProductDiscount.toFixed(2)}`;
       }
 
       const shippingElement = this.cartSidebar.querySelector(
@@ -555,14 +485,17 @@ class CartManager {
       const token = localStorage.getItem("webtoken");
       if (!token) throw new Error("User is not authenticated.");
 
-      const response = await fetch(`${this.baseApiUrl}/web_cart?currency_code=AED`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ productId }),
-      });
+      const response = await fetch(
+        `${this.baseApiUrl}/web_cart?currency_code=AED`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ productId }),
+        }
+      );
 
       const data = await response.json();
 
@@ -595,7 +528,7 @@ class CartManager {
       if (!token) {
         throw new Error("User is not authenticated.");
       }
-
+  
       const response = await fetch(`${this.baseApiUrl}/web_cart`, {
         method: "GET",
         headers: {
@@ -603,17 +536,24 @@ class CartManager {
           "Content-Type": "application/json",
         },
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
+  
       const data = await response.json();
       console.log("Cart data fetched successfully:", data);
-
-      this.renderCart(data);
-      this.updateSubtotals(data);
-      this.updateProductCount(data.productCount);
+  
+      // Render the cart and update UI
+      if (data) {
+        this.renderCart(data);
+        this.updateSubtotals(data);
+        this.updateProductCount(data.productCount);
+      } else {
+        console.warn("Cart data is empty or undefined.");
+        this.renderErrorState(new Error("No cart data found."));
+      }
+  
       return data;
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -646,6 +586,7 @@ class CartManager {
               total + (item.product_discount || 0) * item.product_quantity,
             0
           );
+
 
     // Calculate tax safely
     const totalTax =
@@ -715,18 +656,11 @@ class CartManager {
             </div>
           </div>
           </div>
-          
      <div>
-
      </div>
-
-
-
           <div>
- <button href="total-discount.html" class="btn btn-main mt-16 py-18 w-100 rounded-8">
-    
-  </button>
-  
+      <div class="apply-coupon-btn btn btn-main mt-16 py-18 w-100 rounded-8">
+      </div>
           <a  href="checkout.html" class="btn btn-main mt-40 py-18 w-100 rounded-8">Proceed to checkout</a>
         </div>
       `;
@@ -901,7 +835,6 @@ class CartManager {
 document.addEventListener("DOMContentLoaded", () => {
   new CartManager();
 });
-
 
 document.addEventListener("DOMContentLoaded", () => {
   const wishlistCountBadge = document.getElementById("wishlistCountBadge");

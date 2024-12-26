@@ -677,10 +677,74 @@
               </div>
 
               <a
-                href="checkout.html"
+                href=""
                 class="btn btn-main mt-40 py-18 w-100 rounded-8 mt-56"
-                >Place Order</a
+                onclick="playNotificationSound(); alert('Your order has been processed. Thank you for shopping with us!')"
               >
+                Place Order
+              </a>
+
+              <audio id="notification-sound" src="./assets/audio/success.mp3" preload="auto"></audio>
+
+              <script>
+                function playNotificationSound() {
+                  const sound = document.getElementById("notification-sound");
+                  sound.play();
+                }
+              </script>
+
+
+
+
+              <!-- <a
+              href="index.html"
+              class="btn btn-main mt-40 py-18 w-100 rounded-8 mt-56"
+              onclick="showCustomAlert(); playNotificationSound()"
+            >
+              Place Order
+            </a> -->
+            
+            <!-- Custom Success Notification Modal -->
+            <!-- <div id="success-modal" class="hidden fixed top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-50">
+              <div class="bg-white p-10 rounded-lg text-center shadow-lg transform transition-all max-w-md w-full animate__animated animate__fadeIn">
+                <div class="text-green-500 text-5xl mb-4">
+                  ✔️
+                </div>
+                <p class="text-2xl font-semibold text-gray-800 mb-4">Your order has been processed!</p>
+                <p class="text-gray-600 mb-6">Thank you for shopping with us! We appreciate your order and will notify you when it's on the way.</p>
+                <button onclick="closeCustomAlert()" class="py-2 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none transition-all">Close</button>
+              </div>
+            </div>
+             -->
+            <!-- Add the audio element with a notification sound -->
+            <!-- <audio id="notification-sound" src="./assets/.
+            audio/success.mp3" preload="auto"></audio> -->
+            
+            <!-- <script>
+              // Play notification sound
+              function playNotificationSound() {
+                const sound = document.getElementById("notification-sound");
+                sound.play();
+              }
+            
+              // Show the custom notification modal
+              function showCustomAlert() {
+                const modal = document.getElementById("success-modal");
+                modal.classList.remove("hidden");
+                setTimeout(() => {
+                  closeCustomAlert();  // Automatically close after 5 seconds
+                }, 5000);  // Adjust this time as needed
+              } -->
+            
+              <!-- // Close the custom notification modal
+              function closeCustomAlert() {
+                const modal = document.getElementById("success-modal");
+                modal.classList.add("hidden");
+              } -->
+            <!-- </script> -->
+
+
+
             </div>
           </div>
         </div>
@@ -994,8 +1058,7 @@
 
           <div class="footer-item">
             <h6 class="">Shop on The Go</h6>
-            <p class="mb-16">Games Corner is available. Get it now
-            </p>
+            <p class="mb-16">Games Corner is available. Get it now</p>
             <div class="flex-align gap-8 my-32">
               <a href="#" class="">
                 <img src="assets/images/thumbs/store-img1.png" alt="" />
@@ -1079,7 +1142,7 @@
     <script src="assets/js/categories.js"></script>
     <script src="assets/js/address.js"></script>
     <script src="assets/js/wishlist.js"></script>
-    
+
     <!-- <script src="assets/js/cart.js"></script> -->
   </body>
   <script>
@@ -1108,12 +1171,12 @@
           return response.json();
         })
         .then((data) => {
+          console.log(data);
           // Extracting the necessary values from the response
           const shippingPrice = data.totalShippingPrice;
           const taxAmount = data.totalTax;
-          const grandTotal = data.Total;
-          const currency_code = data.currency_code
-
+          const grandTotal = data.cart.totalDiscount;
+          const currency_code = data.currency_code;
           
 
           // Update the HTML elements with the fetched values
@@ -1127,16 +1190,18 @@
             ".grand-total"
           ).textContent = `AED ${grandTotal.toFixed(2)}`;
 
-
           document.querySelector(
             ".currency_code"
-          ).textContent = `AED ${currency_code.toFixed(2)}`;
-          
+          ).textContent = `AED ${currency_code}`;
+
+         
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
           // Optionally handle the error by notifying the user or redirecting
         });
     });
+
+   
   </script>
 </html>

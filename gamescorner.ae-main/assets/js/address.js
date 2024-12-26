@@ -3,6 +3,9 @@ class ShippingAddressManager {
     this.apiBaseUrl = apiBaseUrl;
     this.webtoken = localStorage.getItem("webtoken");
     this.addresses = [];
+    this.selectedAddressId = null;
+    this.products = JSON.parse(localStorage.getItem("cartItems") || "[]");
+
 
     // DOM Elements
     this.container = document.getElementById("shippingAddressesContainer");
@@ -13,6 +16,7 @@ class ShippingAddressManager {
     this.popup = document.getElementById("popup-dialogue");
     this.editForm = document.getElementById("enquiry-form");
     this.closePopupBtn = document.getElementById("close-popup");
+    this.placeOrderBtn = document.getElementById("placeOrderBtn");
 
     // Bind methods
     this.toggleAddressForm = this.toggleAddressForm.bind(this);
@@ -24,12 +28,63 @@ class ShippingAddressManager {
       this.populateShippingAddressesContainer.bind(this);
     this.prepareEditAddress = this.prepareEditAddress.bind(this);
     this.closeEditModal = this.closeEditModal.bind(this);
+    this.handlePlaceOrder = this.handlePlaceOrder.bind(this);
+    this.handleAddressSelection = this.handleAddressSelection.bind(this);
 
     // Initialize
     this.addEventListeners();
+    this.initializeOrderSummary();
     this.fetchShippingAddresses();
   }
 
+
+  initializeOrderSummary() {
+    const orderSummaryContainer = document.getElementById("orderSummaryContainer");
+    if (!orderSummaryContainer || !this.products.length) return;
+
+    const summary = this.products.map(product => `
+      <div class="product-item flex justify-between mb-2">
+        <span>${product.name}</span>
+        <span>$${product.price}</span>
+      </div>
+    `).join("");
+
+    const total = this.products.reduce((sum, product) => sum + parseFloat(product.price), 0);
+
+
+    orderSummaryContainer.innerHTML = `
+    ${summary}
+    <div class="total font-bold mt-4 border-t pt-2">
+      <div class="flex justify-between">
+        <span>Total:</span>
+        <span>$${total.toFixed(2)}</span>
+      </div>
+    </div>
+  `;
+}
+
+
+handlePlaceOrder() {
+  if (!this.selectedAddressId) {
+    alert("Please select a shipping address");
+    return;
+  }
+
+  if (!this.products.length) {
+    alert("No products in cart");
+    return;
+  }
+
+  const orderData = {
+    addressId: this.selectedAddressId,
+    products: this.products.map(product => ({
+      productId: product.id,
+      quantity: product.quantity || 1
+    }))
+  };
+
+  this.submitOrder(orderData);
+}
   addEventListeners() {
     // Add new address form toggle
     if (this.addNewAddressBtn) {
@@ -76,6 +131,23 @@ class ShippingAddressManager {
         await this.updateShippingAddress(addressId, updatedAddress);
       });
     }
+    // if (this.placeOrderBtn) {
+    //   this.placeOrderBtn.addEventListener("click", this.handlePlaceOrder);
+    // }
+  }
+
+  handleAddressSelection(addressId) {
+    this.selectedAddressId = addressId;
+    // Update UI to show selected address
+    const radios = this.container.querySelectorAll(".delivery-address__radio");
+    radios.forEach(radio => {
+      const addressCard = radio.closest(".delivery-address");
+      if (addressCard.dataset.addressId === addressId) {
+        radio.checked = true;
+      } else {
+        radio.checked = false;
+      }
+    });
   }
 
   toggleAddressForm() {
