@@ -1068,7 +1068,7 @@ function handleOrderNow(product) {
 
 function showAlert(type, message) {
   const alertDiv = document.createElement('div');
-  alertDiv.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
+  alertDiv.className = `alert alert-danger position-fixed top-0 end-0 m-3`;
   alertDiv.style.zIndex = '9999';
   alertDiv.innerHTML = `
       <div class="d-flex align-items-center">
@@ -1139,7 +1139,10 @@ function updateCartCount() {
       }
     })
     .catch((error) => console.error("Error updating cart count:", error));
-}
+};
+
+
+
 //WISH LIST ADDING
 function handleAddToWishlist(productOrEvent) {
   const webtoken = localStorage.getItem("webtoken");
@@ -1149,29 +1152,31 @@ function handleAddToWishlist(productOrEvent) {
     return;
   }
 
-  let product;
-
+  let productId;
+  
   // Handle both event and direct product object scenarios
   if (productOrEvent && productOrEvent.preventDefault) {
     productOrEvent.preventDefault();
-    const button = productOrEvent.target.closest("button, a");
+    // const button = productOrEvent.target.closest("button, a");
+    const button = productOrEvent.target.closest("#wishlist-btn");
+
     if (!button) {
       console.error("Unable to find the button element.");
       return;
     }
-    product = button.getAttribute("data-product-id");
+    productId = button.getAttribute("data-product-id");
   } else {
     const product = productOrEvent;
     if (!product) {
       console.error("No product data available");
       return;
     }
-    product = product._id;
+    productId = product._id;
   }
 
   // Update wishlist button state
   const wishlistButton = document.querySelector(
-    ` #wishlist-btn[data-product-id="${product}"]`
+    ` #wishlist-btn[data-product-id="${productId}"]`
   );
   if (wishlistButton) {
     wishlistButton.disabled = true;
@@ -1185,7 +1190,7 @@ function handleAddToWishlist(productOrEvent) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${webtoken}`,
     },
-    body: JSON.stringify({ product }),
+    body: JSON.stringify({ productId }),
   })
     .then((response) => {
       if (!response.ok) {
@@ -1198,12 +1203,12 @@ function handleAddToWishlist(productOrEvent) {
     .then((data) => {
       if (wishlistButton) {
         wishlistButton.classList.add("text-red-500");
-        wishlistButton.innerHTML = '<i class="ph ph-heart-fill"></i>';
+        wishlistButton.innerHTML = '<i class="ph ph-heart"></i>';
         wishlistButton.disabled = true;
       }
 
       // Show success alert
-      alert(data.message || "Product added to wishlist successfully!");
+      showSuccess(data.message || "Product added to wishlist successfully!");
     })
     .catch((error) => {
       if (wishlistButton) {
@@ -1211,8 +1216,36 @@ function handleAddToWishlist(productOrEvent) {
         wishlistButton.innerHTML = '<i class="ph ph-heart"></i>';
         wishlistButton.classList.remove("text-red-500");
       }
-      alert(error.message);
+      showError(error.message);
     });
+}
+
+
+function showSuccess(message) {
+  const alert = document.createElement("div");
+  alert.className = "alert alert-success position-fixed top-0 end-0 m-3";
+  alert.style.zIndex = "9999";
+  alert.innerHTML = `
+      <div class="d-flex align-items-center">
+        <i class="ph ph-check-circle me-2"></i>
+        <span>${message}</span>
+      </div>`;
+  document.body.appendChild(alert);
+  setTimeout(() => alert.remove(), 3000);
+}
+
+// Function to display an error alert
+function showError(message) {
+  const alert = document.createElement("div");
+  alert.className = "alert alert-danger position-fixed top-0 end-0 m-3";
+  alert.style.zIndex = "9999";
+  alert.innerHTML = `
+      <div class="d-flex align-items-center">
+        <i class="ph ph-x-circle me-2"></i>
+        <span>${message}</span>
+      </div>`;
+  document.body.appendChild(alert);
+  setTimeout(() => alert.remove(), 3000);
 }
 
 function setupProductInteractions(product) {
