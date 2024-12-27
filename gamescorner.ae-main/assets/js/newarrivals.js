@@ -1,4 +1,5 @@
 
+
 class NewArrivalsManager {
   constructor(apiBaseUrl = "https://api.gamescorner.ae/api") {
     this.apiBaseUrl = apiBaseUrl;
@@ -43,7 +44,7 @@ class NewArrivalsManager {
                   <div class="pricing">
                     <div class="current-price">
                       <span class="currency">AED</span>
-                      <span id="modalCurrentPrice" class="fw-bold "></span>
+                      <span id="modalCurrentPrice" class="fw-bold"></span>
                     </div>
                     <div class="original-price">
                       <span class="text-decoration-line-through text-muted">AED</span>
@@ -73,7 +74,6 @@ class NewArrivalsManager {
       </div>
     </div>`;
 
-
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
     document.getElementById('attributeForm').addEventListener('submit', async (e) => {
@@ -91,7 +91,7 @@ class NewArrivalsManager {
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json();
-      if (data.success) {        
+      if (data.success) {
         (data.products || []).forEach(product => {
           this.products[product._id] = product;
         });
@@ -111,7 +111,7 @@ class NewArrivalsManager {
     const aedPricing = product.country_pricing?.find(p => p.currency_code === "AED") || product.country_pricing?.[0];
     const currentPrice = aedPricing?.unit_price || 0;
     const discountedPrice = aedPricing?.discount;
-    
+    const tax_amount = aedPricing?.tax_amount;
 
     return `
       <div class="product-card px-8 py-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
@@ -134,13 +134,13 @@ class NewArrivalsManager {
             <div class="product-card__price">
               ${discountedPrice ?
         `<span class="text-gray-400 text-md fw-semibold text-decoration-line-through d-block">
-                   AED ${currentPrice.toFixed(2)}
+                   AED ${(currentPrice + tax_amount).toFixed(2)}
                  </span>
                  <span class="text-heading text-md fw-semibold">
-                   AED ${discountedPrice.toFixed(2)}
+                   AED ${(discountedPrice + tax_amount).toFixed(2)}
                  </span>` :
         `<span class="text-heading text-md fw-semibold">
-                   AED ${currentPrice.toFixed(2)}
+                   AED ${(currentPrice + tax_amount).toFixed(2)}
                  </span>`
       }
               <span class="text-gray-500 fw-normal">/Qty</span>
@@ -214,20 +214,6 @@ class NewArrivalsManager {
     }
   }
 
-  async fetchAttributes() {
-    try {
-      const promises = attributeIds.map(id =>
-        fetch(`${this.apiBaseUrl}/attributes/${id}`).then(res => res.json())
-      );
-
-      const responses = await Promise.all(promises);
-      return responses.map(response => response.attribute || []).flat();
-    } catch (error) {
-      console.error("Error fetching attributes:", error);
-      return [];
-    }
-  }
-
   showAttributeModal(productId, attributes, productName) {
     const product = this.products[productId];
     if (!product) return;
@@ -244,7 +230,7 @@ class NewArrivalsManager {
     modalProductImage.src = product.image || "assets/images/thumbs/default.png";
     modalProductImage.alt = productName;
 
-    // Set pricing  
+    // Set pricing
     const aedPricing = product.country_pricing?.find(p => p.currency_code === "AED");
     const currentPrice = aedPricing?.discount || aedPricing?.unit_price || 0;
     const originalPrice = aedPricing?.unit_price || 0;
@@ -260,7 +246,15 @@ class NewArrivalsManager {
     // Process product attributes with exact names
     product.attributes.forEach(productAttr => {
       const attribute = attributes.find(attr => attr._id === productAttr.attribute._id);
-      if (!attribute) return;
+      if (!attribute || !attribute.value || !Array.isArray(attribute.value) || attribute.value.length === 0) return;
+
+      // Filter valid attribute values
+      const validValues = attribute.value.filter(val => 
+        productAttr.attribute.attribute_values.includes(val._id)
+      );
+
+      // Skip if no valid values
+      if (validValues.length === 0) return;
 
       const wrapper = document.createElement("div");
       wrapper.className = "mb-3";
@@ -276,25 +270,24 @@ class NewArrivalsManager {
 
       const select = document.createElement("select");
       select.className = "form-select";
-      select.name = attribute.name; // Use exact attribute name
+      select.name = attribute.name;
       select.required = true;
 
-      // Add default option
-      select.innerHTML = `<option value="" disabled selected>Select ${attribute.name}</option>`;
-
-      if (attribute.value && Array.isArray(attribute.value)) {
-        attribute.value
-          .filter(val => productAttr.attribute.attribute_values.includes(val._id))
-          .forEach(val => {
-            select.innerHTML += `<option value="${val.value}">${val.value}</option>`;
-          });
-      }
+      // Add options directly, with first value selected
+      validValues.forEach((val, index) => {
+        const option = document.createElement("option");
+        option.value = val.value;
+        option.textContent = val.value;
+        if (index === 0) option.selected = true;
+        select.appendChild(option);
+      });
 
       wrapper.appendChild(select);
       container.appendChild(wrapper);
     });
 
-    if (product.color && !attributes.some(attr => attr.name.toLowerCase() === "color")) {
+    // Handle color attribute only if colors are available
+    if (product.color && Array.isArray(product.color) && product.color.length > 0) {
       const wrapper = document.createElement("div");
       wrapper.className = "mb-3";
 
@@ -312,17 +305,19 @@ class NewArrivalsManager {
       select.name = "color";
       select.required = true;
 
-      select.innerHTML = `
-        <option value="" disabled selected>Select Color</option>
-        ${product.color.map(color => `
-          <option value="${color.name}" data-color="${color.color_code}">${color.name}</option>
-        `).join("")}
-      `;
+      // Add color options with first color selected
+      product.color.forEach((color, index) => {
+        const option = document.createElement("option");
+        option.value = color.name;
+        option.textContent = color.name;
+        option.dataset.color = color.color_code;
+        if (index === 0) option.selected = true;
+        select.appendChild(option);
+      });
 
       wrapper.appendChild(select);
       container.appendChild(wrapper);
     }
-
 
     // Store productId for form submission
     container.dataset.productId = productId;
@@ -332,114 +327,113 @@ class NewArrivalsManager {
     modal.show();
   }
 
+  // Previous code remains the same up until submitAttributeForm method
 
   async submitAttributeForm(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  const form = event.target;
-  const formData = new FormData(form);
-  const productId = document.getElementById('attributesContainer').dataset.productId;
+    const form = event.target;
+    const formData = new FormData(form);
+    const productId = document.getElementById('attributesContainer').dataset.productId;
 
-  try {
-    const product = this.products[productId];
-    if (!product) {
-      throw new Error("Product not found");
-    }
+    try {
+      const product = this.products[productId];
+      if (!product) {
+        throw new Error("Product not found");
+      }
 
-    // Clear previous error messages
-    document.querySelectorAll('[id$="-error"]').forEach(elem => {
-      elem.textContent = '';
-    });
+      // Clear previous error messages
+      document.querySelectorAll('[id$="-error"]').forEach(elem => {
+        elem.textContent = '';
+      });
 
-    // Initialize attributes object
-    const attributes = {};
-    const missingAttributes = [];
+      // Initialize attributes object
+      const attributes = {};
+      const missingAttributes = [];
 
-    // Validate product attributes
-    if (product.attributes && Array.isArray(product.attributes)) {
-      product.attributes.forEach(attr => {
-        if (!attr.attribute || !attr.attribute.name) return;
-        
-        const attributeName = attr.attribute.name;
-        const value = formData.get(attributeName);
-        
-        if (!value) {
-          missingAttributes.push(attributeName);
-          const errorElem = document.getElementById(`${attributeName}-error`);
+      // Validate product attributes
+      if (product.attributes && Array.isArray(product.attributes)) {
+        product.attributes.forEach(attr => {
+          if (!attr.attribute || !attr.attribute.name) return;
+          
+          const attributeName = attr.attribute.name;
+          const value = formData.get(attributeName);
+          
+          if (!value) {
+            missingAttributes.push(attributeName);
+            const errorElem = document.getElementById(`${attributeName}-error`);
+            if (errorElem) {
+              errorElem.textContent = 'Required';
+            }
+          } else {
+            attributes[attributeName] = value;
+          }
+        });
+      }
+
+      // Handle color attribute
+      if (product.color && product.color.length > 0) {
+        const colorValue = formData.get('color');
+        if (!colorValue) {
+          missingAttributes.push('color');
+          const errorElem = document.getElementById('color-error');
           if (errorElem) {
             errorElem.textContent = 'Required';
           }
         } else {
-          attributes[attributeName] = value;
+          attributes['color'] = colorValue;
         }
-      });
-    }
-
-    // Handle color attribute
-    if (product.color && product.color.length > 0) {
-      const colorValue = formData.get('color');
-      if (!colorValue) {
-        missingAttributes.push('color');
-        const errorElem = document.getElementById('color-error');
-        if (errorElem) {
-          errorElem.textContent = 'Required';
-        }
-      } else {
-        attributes['color'] = colorValue;
       }
+
+      if (missingAttributes.length > 0) {
+        throw new Error(`Please select: ${missingAttributes.join(', ')}`);
+      }
+
+      const aedPricing = product.country_pricing?.find(p => p.currency_code === "AED") || product.country_pricing?.[0];
+      if (!aedPricing) throw new Error("Product pricing not found");
+
+      const payload = {
+        product: productId,
+        product_quantity: parseInt(formData.get('product_quantity')) || 1,
+        attributes,
+        product_currecy_code: aedPricing.currency_code || '',
+        product_price: parseFloat(aedPricing.unit_price),
+        product_discount: parseFloat(aedPricing.discount) || 0,
+        shipping_price: parseFloat(aedPricing.shipping_price) || 0,
+        shipping_time: aedPricing.shipping_time || '',
+        tax_amount: parseFloat(aedPricing.tax_amount) || 0
+      };
+
+      const response = await fetch(`${this.apiBaseUrl}/web_cart`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.webtoken}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to add item to cart");
+      }
+
+      this.showSuccess(data.message || "Item added to cart successfully");
+      
+      // Close modal and update cart count
+      const modal = bootstrap.Modal.getInstance(document.getElementById('attributeModal'));
+      modal.hide();
+
+      if (typeof updateCartCount === 'function') {
+        updateCartCount();
+      }
+
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      this.showError(error.message);
     }
-
-    if (missingAttributes.length > 0) {
-      throw new Error(`Please select: ${missingAttributes.join(', ')}`);
-    }
-
-    // const aedPricing = product.country_pricing?.find(p => p.currency_code === "AED") || product.country_pricing?.[0];
-    const aedPricing = product.country_pricing?.find(p => p.currency_code === "AED") || product.country_pricing?.[0];
-    if (!aedPricing) throw new Error("Product pricing not found");
-    
-
-    const payload = {
-      product: productId,
-      product_quantity: parseInt(formData.get('product_quantity')) || 1,
-      attributes,
-      product_currecy_code: aedPricing.currency_code || '',
-      product_price: parseFloat(aedPricing.unit_price),
-      product_discount: parseFloat(aedPricing.discount) || 0,
-      shipping_price: parseFloat(aedPricing.shipping_price) || 0,
-      shipping_time: aedPricing.shipping_time || '',
-      tax_amount: parseFloat(aedPricing.tax_amount) || 0
-    };
-
-    const response = await fetch(`${this.apiBaseUrl}/web_cart`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.webtoken}`
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await response.json();
-    
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to add item to cart");
-    }
-
-    this.showSuccess(data.message || "Item added to cart successfully");
-    
-    // Close modal and update cart count
-    const modal = bootstrap.Modal.getInstance(document.getElementById('attributeModal'));
-    modal.hide();
-
-    if (typeof updateCartCount === 'function') {
-      updateCartCount();
-    }
-
-  } catch (error) {
-    console.error("Error adding to cart:", error);
-    this.showError(error.message);
   }
-}
 
   initSlider() {
     if (typeof $ === "undefined" || typeof $.fn.slick === "undefined") {

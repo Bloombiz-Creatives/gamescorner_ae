@@ -560,8 +560,8 @@ class ProductListing {
                     }</a>
                 </h6>
                 <div class="product-card__price my-20">
-                      <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">AED ${price}</span>
-                      <span class="text-heading text-md fw-semibold ">AED ${discount}<span
+                      <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">AED ${price + tax_amount}</span>
+                      <span class="text-heading text-md fw-semibold ">AED ${discount + tax_amount}<span
                       class="text-gray-500 fw-normal"></span> </span>
                  </div>
                  <a  class="product-card__cart btn bg-gray-50 text-heading hover-bg-main-600 hover-text-white py-11 px-24 rounded-8 flex-center gap-8 fw-medium"
