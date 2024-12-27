@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch('http://localhost:5002/api/category');
+            const response = await fetch('https://api.gamescorner.ae/api/category');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

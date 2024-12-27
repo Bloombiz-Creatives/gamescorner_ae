@@ -37,6 +37,21 @@ class ShippingAddressManager {
     this.addEventListeners();
     this.fetchShippingAddresses();
     this.initializeOrderSummary();
+    this.updateCartCount();
+
+  }
+
+  updateCartCount() {
+    const cartCount = localStorage.getItem("cartCount") || "0";
+    const desktopCounter = document.getElementById("CartproductCountDesktop");
+    const mobileCounter = document.getElementById("CartproductCountMobile");
+    
+    if (desktopCounter) {
+      desktopCounter.textContent = cartCount;
+    }
+    if (mobileCounter) {
+      mobileCounter.textContent = cartCount;
+    }
   }
 
   initializeAudio() {

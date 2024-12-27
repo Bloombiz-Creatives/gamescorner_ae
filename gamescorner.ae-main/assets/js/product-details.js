@@ -1107,7 +1107,7 @@ function handleOrderNow(product) {
 
 function showAlert(type, message) {
   const alertDiv = document.createElement("div");
-  alertDiv.className = `alert alert-danger position-fixed top-0 end-0 m-3`;
+  alertDiv.className = `alert alert-success position-fixed top-0 end-0 m-3`;
   alertDiv.style.zIndex = "9999";
   alertDiv.innerHTML = `
       <div class="d-flex align-items-center">

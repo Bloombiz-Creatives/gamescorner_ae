@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const wishlistContainer = document.querySelector("tbody");
   const clearCartButton = document.querySelector(".clear-section button");
-  // const wishlistCountElement = document.getElementById('wishlistCount');
 
   // Fetch and render wishlist items
   async function fetchWishlist() {
@@ -19,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const data = await response.json();
-      console.log(data.wishlistCount, "ths");
       updateWishlistCount(data.wishlistCount || 0);
 
       renderWishlistItems(data.wishlist?.products || []);
@@ -204,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateWishlistCount(storedWishlistCount);
 
   const CarttCountElement = document.getElementById("CartCount");
-  const storedCount = localStorage.getItem("cartCount") || "0";
+  const storedCount = localStorage.getItem("cartCount") || "0";  
   if (CarttCountElement) {
     CarttCountElement.textContent = storedCount;
   }

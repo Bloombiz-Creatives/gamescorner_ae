@@ -601,20 +601,170 @@ class ProductListing {
     }
   }
 
+  // async showAttributeModal(productId, attributes, productName) {
+  //   const product = this.products[productId];
+  //   if (!product) return;
+
+  //   let allAttributes;
+  //   try {
+  //     const response = await fetch("https://api.gamescorner.ae/api/attributes");
+  //     const data = await response.json();
+  //     if (data.success) {
+  //       allAttributes = data.attribute;
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching attributes:", error);
+  //     return;
+  //   }
+
+  //   const modalProductName = document.getElementById("modalProductName");
+  //   const modalProductImage = document.getElementById("modalProductImage");
+  //   const modalCurrentPrice = document.getElementById("modalCurrentPrice");
+  //   const modalOriginalPrice = document.getElementById("modalOriginalPrice");
+  //   const modalDiscount = document.getElementById("modalDiscount");
+  //   const container = document.getElementById("attributesContainer");
+
+  //   if (!container) return;
+
+  //   modalProductName.textContent = productName;
+  //   modalProductImage.src = product.image || "assets/images/thumbs/default.png";
+  //   modalProductImage.alt = productName;
+
+  //   const aedPricing =
+  //     product.country_pricing?.find((p) => p.currency_code === "AED") ||
+  //     product.country_pricing?.[0];
+  //   const currentPrice = aedPricing?.discount || aedPricing?.unit_price || 0;
+  //   const originalPrice = aedPricing?.unit_price || 0;
+  //   const discountPercentage = aedPricing?.discount
+  //     ? Math.round(
+  //         ((originalPrice - aedPricing.discount) / originalPrice) * 100
+  //       )
+  //     : 0;
+
+  //   modalCurrentPrice.textContent = currentPrice.toFixed(2);
+  //   modalOriginalPrice.textContent =
+  //     discountPercentage > 0 ? originalPrice.toFixed(2) : "";
+  //   modalDiscount.textContent =
+  //     discountPercentage > 0 ? `(${discountPercentage}% off)` : "";
+
+  //   container.innerHTML = "";
+  //   container.dataset.productId = productId;
+
+  //   // Handle custom attributes
+  //   if (attributes && attributes.length > 0) {
+  //     attributes.forEach((attr) => {
+  //       const wrapper = document.createElement("div");
+  //       wrapper.className = "mb-3";
+
+  //       const attributeName = attr.attribute.name;
+  //       const attributeIds = attr.attribute.attribute_values || [];
+
+  //       const fullAttribute = allAttributes.find(
+  //         (a) => a._id === attr.attribute._id
+  //       );
+  //       const attributeValues = attributeIds.map((id) => {
+  //         const valueObj = fullAttribute?.value.find((v) => v._id === id);
+  //         return valueObj?.value || id; // Fallback to ID if value not found
+  //       });
+
+  //       wrapper.innerHTML = `
+  //         <div class="d-flex justify-content-between align-items-center mb-2">
+  //           <span class="fw-medium">${attributeName}</span>
+  //           <span class="text-danger"></span>
+  //         </div>
+  //         <select class="form-select" name="${attributeName.toLowerCase()}" required>
+  //           <option value="" disabled selected>Select ${attributeName}</option>
+  //           ${attributeValues
+  //             .map((value) => {
+  //               const selectedValue =
+  //                 product[attributeName.toLowerCase()] || ""; // Get selected value from the product
+  //               return `<option value="${value}" ${
+  //                 selectedValue === value ? "selected" : ""
+  //               }>${value}</option>`;
+  //             })
+  //             .join("")}
+  //         </select>
+  //       `;
+
+  //       container.appendChild(wrapper);
+  //     });
+  //   }
+
+  //   const standardAttributes = [
+  //     {
+  //       key: "color",
+  //       values:
+  //         product.color?.map((c) => ({
+  //           id: c.id,
+  //           name: c.name,
+  //           code: c.color_code,
+  //         })) || [],
+  //     },
+  //     {
+  //       key: "size",
+  //       values:
+  //         product.size?.map((s) => ({ id: s.id || s, name: s.value || s })) ||
+  //         [],
+  //     },
+  //     {
+  //       key: "ram",
+  //       values:
+  //         product.ram?.map((r) => ({ id: r.id || r, name: r.name || r })) || [],
+  //     },
+  //   ];
+
+  //   standardAttributes.forEach(({ key, values }) => {
+  //     if (values && values.length > 0) {
+  //       const wrapper = document.createElement("div");
+  //       wrapper.className = "mb-3";
+
+  //       const displayKey = key.charAt(0).toUpperCase() + key.slice(1);
+  //       wrapper.innerHTML = `
+  //         <div class="d-flex justify-content-between align-items-center mb-2">
+  //           <span class="fw-medium">${displayKey}</span>
+  //           <span class="text-danger" id="${key}-error"></span>
+  //         </div>
+  //         <select class="form-select" name="${key}" required>
+  //           <option value="" disabled selected>Select ${displayKey}</option>
+  //           ${values
+  //             .map((val) => {
+  //               const selectedValue = product[key]?.id || product[key]; // Adjust to check both id and name
+  //               const isSelected =
+  //                 selectedValue &&
+  //                 (selectedValue === val.id || selectedValue === val.name)
+  //                   ? "selected"
+  //                   : "";
+  //               return `<option value="${val.id}" ${isSelected} ${
+  //                 val.code ? `data-color="${val.code}"` : ""
+  //               }>${val.name}</option>`;
+  //             })
+  //             .join("")}
+  //         </select>
+  //       `;
+  //       container.appendChild(wrapper);
+  //     }
+  //   });
+
+  //   const modal = new bootstrap.Modal(
+  //     document.getElementById("attributeModal")
+  //   );
+  //   modal.show();
+  // }
+
   async showAttributeModal(productId, attributes, productName) {
     const product = this.products[productId];
     if (!product) return;
 
     let allAttributes;
     try {
-      const response = await fetch("https://api.gamescorner.ae/api/attributes");
-      const data = await response.json();
-      if (data.success) {
-        allAttributes = data.attribute;
-      }
+        const response = await fetch("https://api.gamescorner.ae/api/attributes");
+        const data = await response.json();
+        if (data.success) {
+            allAttributes = data.attribute;
+        }
     } catch (error) {
-      console.error("Error fetching attributes:", error);
-      return;
+        console.error("Error fetching attributes:", error);
+        return;
     }
 
     const modalProductName = document.getElementById("modalProductName");
@@ -631,126 +781,126 @@ class ProductListing {
     modalProductImage.alt = productName;
 
     const aedPricing =
-      product.country_pricing?.find((p) => p.currency_code === "AED") ||
-      product.country_pricing?.[0];
+        product.country_pricing?.find((p) => p.currency_code === "AED") ||
+        product.country_pricing?.[0];
     const currentPrice = aedPricing?.discount || aedPricing?.unit_price || 0;
     const originalPrice = aedPricing?.unit_price || 0;
     const discountPercentage = aedPricing?.discount
-      ? Math.round(
-          ((originalPrice - aedPricing.discount) / originalPrice) * 100
+        ? Math.round(
+            ((originalPrice - aedPricing.discount) / originalPrice) * 100
         )
-      : 0;
+        : 0;
 
     modalCurrentPrice.textContent = currentPrice.toFixed(2);
     modalOriginalPrice.textContent =
-      discountPercentage > 0 ? originalPrice.toFixed(2) : "";
+        discountPercentage > 0 ? originalPrice.toFixed(2) : "";
     modalDiscount.textContent =
-      discountPercentage > 0 ? `(${discountPercentage}% off)` : "";
+        discountPercentage > 0 ? `(${discountPercentage}% off)` : "";
 
     container.innerHTML = "";
     container.dataset.productId = productId;
 
     // Handle custom attributes
     if (attributes && attributes.length > 0) {
-      attributes.forEach((attr) => {
-        const wrapper = document.createElement("div");
-        wrapper.className = "mb-3";
+        attributes.forEach((attr) => {
+            const wrapper = document.createElement("div");
+            wrapper.className = "mb-3";
 
-        const attributeName = attr.attribute.name;
-        // const attributeValues = attr.attribute.attribute_values || [];
-        const attributeIds = attr.attribute.attribute_values || [];
+            const attributeName = attr.attribute.name;
+            const attributeIds = attr.attribute.attribute_values || [];
 
-        const fullAttribute = allAttributes.find(
-          (a) => a._id === attr.attribute._id
-        );
-        const attributeValues = attributeIds.map((id) => {
-          const valueObj = fullAttribute?.value.find((v) => v._id === id);
-          return valueObj?.value || id; // Fallback to ID if value not found
+            const fullAttribute = allAttributes.find(
+                (a) => a._id === attr.attribute._id
+            );
+            const attributeValues = attributeIds.map((id) => {
+                const valueObj = fullAttribute?.value.find((v) => v._id === id);
+                return valueObj?.value || id; // Fallback to ID if value not found
+            });
+
+            wrapper.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-medium">${attributeName}</span>
+                    <span class="text-danger"></span>
+                </div>
+                <select class="form-select" name="${attributeName.toLowerCase()}" required>
+                    ${attributeValues
+                        .map((value, index) => {
+                            const selectedValue =
+                                product[attributeName.toLowerCase()] || ""; // Get selected value from the product
+                            return `<option value="${value}" ${
+                                index === 0 || selectedValue === value ? "selected" : ""
+                            }>${value}</option>`;
+                        })
+                        .join("")}
+                </select>
+            `;
+
+            container.appendChild(wrapper);
         });
-
-        wrapper.innerHTML = `
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="fw-medium">${attributeName}</span>
-            <span class="text-danger"></span>
-          </div>
-          <select class="form-select" name="${attributeName.toLowerCase()}" required>
-            <option value="" disabled selected>Select ${attributeName}</option>
-            ${attributeValues
-              .map((value) => {
-                const selectedValue =
-                  product[attributeName.toLowerCase()] || ""; // Get selected value from the product
-                return `<option value="${value}" ${
-                  selectedValue === value ? "selected" : ""
-                }>${value}</option>`;
-              })
-              .join("")}
-          </select>
-        `;
-
-        container.appendChild(wrapper);
-      });
     }
 
     const standardAttributes = [
-      {
-        key: "color",
-        values:
-          product.color?.map((c) => ({
-            id: c.id,
-            name: c.name,
-            code: c.color_code,
-          })) || [],
-      },
-      {
-        key: "size",
-        values:
-          product.size?.map((s) => ({ id: s.id || s, name: s.value || s })) ||
-          [],
-      },
-      {
-        key: "ram",
-        values:
-          product.ram?.map((r) => ({ id: r.id || r, name: r.name || r })) || [],
-      },
+        {
+            key: "color",
+            values:
+                product.color?.map((c) => ({
+                    id: c.id,
+                    name: c.name,
+                    code: c.color_code,
+                })) || [],
+        },
+        {
+            key: "size",
+            values:
+                product.size?.map((s) => ({ id: s.id || s, name: s.value || s })) ||
+                [],
+        },
+        {
+            key: "ram",
+            values:
+                product.ram?.map((r) => ({ id: r.id || r, name: r.name || r })) || [],
+        },
     ];
 
     standardAttributes.forEach(({ key, values }) => {
-      if (values && values.length > 0) {
-        const wrapper = document.createElement("div");
-        wrapper.className = "mb-3";
+        if (values && values.length > 0) {
+            const wrapper = document.createElement("div");
+            wrapper.className = "mb-3";
 
-        const displayKey = key.charAt(0).toUpperCase() + key.slice(1);
-        wrapper.innerHTML = `
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="fw-medium">${displayKey}</span>
-            <span class="text-danger" id="${key}-error"></span>
-          </div>
-          <select class="form-select" name="${key}" required>
-            <option value="" disabled selected>Select ${displayKey}</option>
-            ${values
-              .map((val) => {
-                const selectedValue = product[key]?.id || product[key]; // Adjust to check both id and name
-                const isSelected =
-                  selectedValue &&
-                  (selectedValue === val.id || selectedValue === val.name)
-                    ? "selected"
-                    : "";
-                return `<option value="${val.id}" ${isSelected} ${
-                  val.code ? `data-color="${val.code}"` : ""
-                }>${val.name}</option>`;
-              })
-              .join("")}
-          </select>
-        `;
-        container.appendChild(wrapper);
-      }
+            const displayKey = key.charAt(0).toUpperCase() + key.slice(1);
+            wrapper.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-medium">${displayKey}</span>
+                    <span class="text-danger" id="${key}-error"></span>
+                </div>
+                <select class="form-select" name="${key}" required>
+                    ${values
+                        .map((val, index) => {
+                            const selectedValue = product[key]?.id || product[key]; // Adjust to check both id and name
+                            const isSelected =
+                                selectedValue &&
+                                (selectedValue === val.id || selectedValue === val.name)
+                                    ? "selected"
+                                    : index === 0 // Default to the first value if nothing is selected
+                                    ? "selected"
+                                    : "";
+                            return `<option value="${val.id}" ${isSelected} ${
+                                val.code ? `data-color="${val.code}"` : ""
+                            }>${val.name}</option>`;
+                        })
+                        .join("")}
+                </select>
+            `;
+            container.appendChild(wrapper);
+        }
     });
 
     const modal = new bootstrap.Modal(
-      document.getElementById("attributeModal")
+        document.getElementById("attributeModal")
     );
     modal.show();
-  }
+}
+
 
   renderAttributes(attributes) {
     const container = document.getElementById("attributesContainer");
@@ -936,7 +1086,7 @@ class ProductListing {
         attributes,
       };
 
-      const response = await fetch(`http://localhost:5002/api/web_cart`, {
+      const response = await fetch(`https://api.gamescorner.ae/api/web_cart`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

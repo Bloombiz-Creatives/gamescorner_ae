@@ -20,6 +20,80 @@
   <link rel="stylesheet" href="assets/css/jquery-ui.css" />
   <!-- Main css -->
   <link rel="stylesheet" href="assets/css/main.css" />
+
+  <style>
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .hidden {
+  display: none;
+}
+    .modal-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .success-icon {
+      background-color: #4CAF50;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .success-icon svg {
+      width: 32px;
+      height: 32px;
+      color: white;
+    }
+
+    .modal-title {
+      color: #333;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-message {
+      color: #666;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 40px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .modal-button:hover {
+      background-color: #45a049;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -179,7 +253,7 @@
             <a href="cart.html" class="flex-align gap-4 item-hover">
               <span class="text-2xl text-gray-700 d-flex position-relative me-6 mt-6 item-hover__text">
                 <i class="ph ph-shopping-cart-simple"></i>
-                <span
+                <span id="CartproductCountDesktop"
                   class="w-16 h-16 flex-center rounded-circle bg-main-600 text-white text-xs position-absolute top-n6 end-n4">0</span>
               </span>
               <span class="text-md text-gray-500 item-hover__text d-none d-lg-flex">Cart</span>
@@ -294,7 +368,7 @@
       <i class="ph ph-shopping-cart-simple"></i>
       <span>Cart</span>
       <!-- Cart Notification Badge -->
-      <span
+      <span id="CartproductCountMobile" 
         class="notification-badge position-absolute top-n6 end-n4 bg-main-600 text-white rounded-circle text-xs flex-center cart">0</span>
     </a>
 
@@ -500,6 +574,24 @@
                 .
               </p>
             </div>
+
+            <div id="success-modal" class="modal-overlay hidden">
+              <div class="modal-container">
+                <div class="success-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h2 class="modal-title">Success!</h2>
+                <p class="modal-message">Your Order has been confirmed.<br>Check your email for details.</p>
+                  <button id="close-modal-btn" class="btn btn-main mt-4"
+                  onclick="document.getElementById('success-modal').classList.add('hidden')">
+                  Ok
+                </button>
+              </div>
+              <audio id="notification-sound" src="../gamescorner.ae-main/assets/audio/success.mp3" preload="auto"></audio>
+            </div>
+
 
             <a  id="placeOrderBtn" class="btn btn-main mt-40 py-18 w-100 rounded-8 mt-56">Place Order</a>
           </div>

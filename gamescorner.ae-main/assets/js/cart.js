@@ -9,7 +9,7 @@ class CartManager {
     this.applyCouponButton = document.querySelector(".btn.btn-main");
     this.updateCartButton = document.querySelector(".text-lg.text-gray-500");
 
-    this.baseApiUrl = "http://127.0.0.1:5002/api";
+    this.baseApiUrl = "https://api.gamescorner.ae/api";
     this.initialize();
   }
 
@@ -50,11 +50,15 @@ class CartManager {
   }
 
   updateProductCount(count) {
-    const productCountElement = document.getElementById("CartproductCount");
-    if (productCountElement) {
-      productCountElement.textContent = count;
-      localStorage.setItem("cartCount", count);
+    const desktopCount = document.getElementById("CartproductCountDesktop");
+    const mobileCount = document.getElementById("CartproductCountMobile");
+    if (desktopCount) {
+      desktopCount.textContent = count;
     }
+    if (mobileCount) {
+      mobileCount.textContent = count;
+    }
+    localStorage.setItem("cartCount", count);
   }
 
   setupEventListeners() {
@@ -832,6 +836,9 @@ class CartManager {
 // Initialize cart manager when document is ready
 document.addEventListener("DOMContentLoaded", () => {
   new CartManager();
+  const storedCount = localStorage.getItem("cartCount") || "0";
+  document.querySelectorAll("#CartproductCountDesktop, #CartproductCountMobile")
+    .forEach(element => element.textContent = storedCount);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
