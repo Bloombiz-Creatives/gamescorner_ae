@@ -20,7 +20,6 @@ class ShippingAddressManager {
     this.closePopupBtn = document.getElementById("close-popup");
     this.placeOrderBtn = document.getElementById("placeOrderBtn");
 
-
     // Bind methods
     this.toggleAddressForm = this.toggleAddressForm.bind(this);
     this.addShippingAddress = this.addShippingAddress.bind(this);
@@ -38,14 +37,13 @@ class ShippingAddressManager {
     this.addEventListeners();
     this.fetchShippingAddresses();
     this.initializeOrderSummary();
-
   }
 
   initializeAudio() {
-    this.successSound = new Audio('../audio/success.mp3');
-    this.successSound.preload = 'auto';
-    this.successSound.addEventListener('error', (e) => {
-      console.warn('Audio loading error:', e);
+    this.successSound = new Audio("../audio/success.mp3");
+    this.successSound.preload = "auto";
+    this.successSound.addEventListener("error", (e) => {
+      console.warn("Audio loading error:", e);
       this.successSound = null;
     });
   }
@@ -65,9 +63,11 @@ class ShippingAddressManager {
     if (this.successSound) {
       try {
         this.successSound.currentTime = 0;
-        this.successSound.play().catch(e => console.warn('Sound playback failed:', e));
+        this.successSound
+          .play()
+          .catch((e) => console.warn("Sound playback failed:", e));
       } catch (error) {
-        console.warn('Error playing success sound:', error);
+        console.warn("Error playing success sound:", error);
       }
     }
 
@@ -86,7 +86,6 @@ class ShippingAddressManager {
     document.body.appendChild(alert);
     setTimeout(() => alert.remove(), 3000);
   }
-
 
   addEventListeners() {
     if (this.addNewAddressBtn) {
@@ -139,12 +138,11 @@ class ShippingAddressManager {
     }
   }
 
-
   handleAddressSelection(addressId) {
     this.selectedAddressId = addressId;
     // Update UI to show selected address
     const radios = this.container.querySelectorAll(".delivery-address__radio");
-    radios.forEach(radio => {
+    radios.forEach((radio) => {
       const addressCard = radio.closest(".delivery-address");
       if (addressCard.dataset.addressId === addressId) {
         radio.checked = true;
@@ -161,7 +159,7 @@ class ShippingAddressManager {
         console.error("No order data found");
         return;
       }
-
+      console.log("hajs", this.orderData);
       const {
         quantity = 1,
         discountPrice = 0,
@@ -171,7 +169,6 @@ class ShippingAddressManager {
         cartItems = [],
         productName = "",
         productImage = "",
-
       } = this.orderData;
 
       let totalDiscountPrice = 0;
@@ -179,10 +176,12 @@ class ShippingAddressManager {
       let totalTaxAmount = 0;
 
       if (cartItems && cartItems.length > 0) {
-        cartItems.forEach(item => {
+        cartItems.forEach((item) => {
           const itemQuantity = parseInt(item.quantity) || 1;
-          totalDiscountPrice += parseFloat(item.discountPrice || 0) * itemQuantity;
-          totalShippingPrice += parseFloat(item.shippingPrice || 0) * itemQuantity;
+          totalDiscountPrice +=
+            parseFloat(item.discountPrice || 0) * itemQuantity;
+          totalShippingPrice +=
+            parseFloat(item.shippingPrice || 0) * itemQuantity;
           totalTaxAmount += parseFloat(item.taxAmount || 0) * itemQuantity;
         });
       } else {
@@ -191,14 +190,15 @@ class ShippingAddressManager {
         totalTaxAmount = parseFloat(taxAmount) * quantity;
       }
 
-      const grandTotal = totalDiscountPrice + totalShippingPrice + totalTaxAmount;
+      const grandTotal =
+        totalDiscountPrice + totalShippingPrice + totalTaxAmount;
 
       // Update DOM
       const elements = {
-        '.discount-price': totalDiscountPrice,
-        '.shipping-price': totalShippingPrice,
-        '.tax-amount': totalTaxAmount,
-        '.grand-total': grandTotal
+        ".discount-price": totalDiscountPrice,
+        ".shipping-price": totalShippingPrice,
+        ".tax-amount": totalTaxAmount,
+        ".grand-total": grandTotal,
       };
 
       Object.entries(elements).forEach(([selector, value]) => {
@@ -208,8 +208,8 @@ class ShippingAddressManager {
         }
       });
 
-      const productNameElement = document.querySelector('.product-name');
-      const productImageElement = document.querySelector('.order-img');
+      const productNameElement = document.querySelector(".product-name");
+      const productImageElement = document.querySelector(".order-img");
 
       if (productNameElement) {
         productNameElement.textContent = productName;
@@ -219,19 +219,16 @@ class ShippingAddressManager {
         productImageElement.src = productImage;
         productImageElement.alt = productName;
       }
-
     } catch (error) {
       console.error("Error calculating order summary:", error);
     }
   }
 
   async handlePlaceOrder() {
-
     const placeOrderBtn = document.getElementById("placeOrderBtn");
     const originalText = placeOrderBtn.textContent;
 
     try {
-
       placeOrderBtn.disabled = true;
       placeOrderBtn.innerHTML = `
         <svg class="animate-spin h-5 w-5 mr-3 inline" viewBox="0 0 24 24">
@@ -241,7 +238,9 @@ class ShippingAddressManager {
         Processing...
       `;
 
-      const selectedRadio = document.querySelector('.delivery-address__radio:checked');
+      const selectedRadio = document.querySelector(
+        ".delivery-address__radio:checked"
+      );
       if (!selectedRadio) {
         alert("Please select a shipping address");
         return;
@@ -257,7 +256,7 @@ class ShippingAddressManager {
         discountPrice = 0,
         shippingPrice = 0,
         taxAmount = 0,
-        product_id
+        product_id,
       } = orderData;
 
       const calculatedPrice = parseFloat(discountPrice) * quantity;
@@ -265,7 +264,8 @@ class ShippingAddressManager {
       const calculatedTax = parseFloat(taxAmount) * quantity;
       const total = calculatedPrice + calculatedShipping + calculatedTax;
 
-      const savedAddressId = selectedRadio.closest(".delivery-address").dataset.addressId;
+      const savedAddressId =
+        selectedRadio.closest(".delivery-address").dataset.addressId;
 
       const orderPayload = {
         currency_code: orderData.currency_code || "AED",
@@ -274,7 +274,7 @@ class ShippingAddressManager {
         savedAddressId: savedAddressId,
         total: total,
         shippingPrice: calculatedShipping,
-        taxAmount: calculatedTax
+        taxAmount: calculatedTax,
       };
 
       const response = await fetch(`${this.apiBaseUrl}/order/direct`, {
@@ -292,7 +292,7 @@ class ShippingAddressManager {
         localStorage.removeItem("orderData");
         this.showSuccess("Order placed successfully!");
         setTimeout(() => {
-          window.location.href = "/shop.html";
+          window.location.href = "shop.html";
         }, 1500);
       } else {
         throw new Error(data.message || "Failed to place order");
@@ -300,9 +300,8 @@ class ShippingAddressManager {
     } catch (error) {
       console.error("Error placing order:", error);
       // alert(`Error: ${error.message}`);
-      this.showError(`Error: ${error.message}`, 'error');
-    }
-    finally {
+      this.showError(`Error: ${error.message}`, "error");
+    } finally {
       placeOrderBtn.disabled = false;
       placeOrderBtn.textContent = originalText;
     }
@@ -322,7 +321,8 @@ class ShippingAddressManager {
 
   createAddressCard(address) {
     return `
-      <div class="delivery-address border p-4 mb-4 rounded-lg" data-address-id="${address._id
+      <div class="delivery-address border p-4 mb-4 rounded-lg" data-address-id="${
+        address._id
       }">
         <div class="delivery-address__content flex justify-between">
           <div class="delivery-address__option flex items-center">
@@ -337,8 +337,9 @@ class ShippingAddressManager {
                 ${address.name} , ${address.phoneNo}
               </div>
               <div class="delivery-address__address text-gray-600">
-                ${address.address}, ${address.city}, ${address.state}, ${address.country
-      } - ${address.pinCode}
+                ${address.address}, ${address.city}, ${address.state}, ${
+      address.country
+    } - ${address.pinCode}
               </div>
             </div>
              <div class="delivery-address__actions flex space-x-4">
@@ -402,7 +403,6 @@ class ShippingAddressManager {
         });
       });
   }
-
 
   prepareEditAddress(addressId) {
     const address = this.addresses.find((addr) => addr._id === addressId);
@@ -545,4 +545,3 @@ class ShippingAddressManager {
 document.addEventListener("DOMContentLoaded", () => {
   const manager = new ShippingAddressManager();
 });
-

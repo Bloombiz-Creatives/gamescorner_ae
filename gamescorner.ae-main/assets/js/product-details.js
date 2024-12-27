@@ -46,65 +46,68 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
- function initializeOrderNowButton(product) {
-    const orderNowButton = document.querySelector(".order-now"); 
+  function initializeOrderNowButton(product) {
+    const orderNowButton = document.querySelector(".order-now");
     if (orderNowButton) {
-      orderNowButton.addEventListener('click', (e) => handleOrderNow(e, product));
+      orderNowButton.addEventListener("click", (e) =>
+        handleOrderNow(e, product)
+      );
     }
   }
 
-
   function handleOrderNow(e, product) {
     e.preventDefault();
-    const quantity = parseInt(document.querySelector('.quantity__input')?.value || '1');
+    const quantity = parseInt(
+      document.querySelector(".quantity__input")?.value || "1"
+    );
     if (isNaN(quantity) || quantity < 1) {
-      showAlert('error', 'Please enter a valid quantity');
+      showAlert("error", "Please enter a valid quantity");
       return;
     }
 
     const { valid, selectedAttributes } = validateAndUpdateAttributes();
     if (!valid) {
-      showAlert('error', 'Please select all required attributes');
+      showAlert("error", "Please select all required attributes");
       return;
     }
 
     if (product.color?.length > 0 && !window.selectedColor) {
-      showAlert('error', 'Please select a color');
+      showAlert("error", "Please select a color");
       return;
     }
 
-    const aedPricing = product.country_pricing?.find(p => p.currency_code === "AED") || product.country_pricing?.[0];
+    const aedPricing =
+      product.country_pricing?.find((p) => p.currency_code === "AED") ||
+      product.country_pricing?.[0];
     if (!aedPricing) {
-      showAlert('error', 'Price information not available');
+      showAlert("error", "Price information not available");
       return;
     }
-
 
     const orderData = {
       product_id: product._id,
       shippingPrice: aedPricing.shipping_price,
-      shippingTime:aedPricing.shipping_time,
+      shippingTime: aedPricing.shipping_time,
       taxAmount: aedPricing.tax_amount,
-      discountPrice: aedPricing.discount,
+      discountPrice: aedPricing.discount ,
       quantity: quantity,
       currency_code: "AED",
       attributes: {
         ...selectedAttributes,
-        color: window.selectedColor || ""
+        color: window.selectedColor || "",
       },
       productImage: product.image,
       productName: product.name,
     };
 
     try {
-      localStorage.setItem('orderData', JSON.stringify(orderData));
-      window.location.href = 'order-checkout.html';
+      localStorage.setItem("orderData", JSON.stringify(orderData));
+      window.location.href = "order-checkout.html";
     } catch (error) {
-      console.error('Error storing order data:', error);
-      showAlert('error', 'Failed to process order. Please try again.');
+      console.error("Error storing order data:", error);
+      showAlert("error", "Failed to process order. Please try again.");
     }
   }
-
 
   async function setupProductAttributes(product) {
     if (!product.attributes || !Array.isArray(product.attributes)) {
@@ -112,56 +115,67 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    const attributesContainer = document.querySelector('.attribute-stng');
+    const attributesContainer = document.querySelector(".attribute-stng");
     if (!attributesContainer) {
       console.error("Attributes container not found");
       return;
     }
 
-    attributesContainer.innerHTML = '';
+    attributesContainer.innerHTML = "";
 
     for (const productAttr of product.attributes) {
       try {
-        const response = await fetch(`https://api.gamescorner.ae/api/attributes/${productAttr.attribute._id}`);
-        if (!response.ok) throw new Error(`Failed to fetch attribute ${productAttr.attribute._id}`);
+        const response = await fetch(
+          `https://api.gamescorner.ae/api/attributes/${productAttr.attribute._id}`
+        );
+        if (!response.ok)
+          throw new Error(
+            `Failed to fetch attribute ${productAttr.attribute._id}`
+          );
 
         const data = await response.json();
         const attributeDetails = data.attribute;
 
-        const wrapper = document.createElement('div');
-        wrapper.className = 'relative w-full md:w-1/2 lg:w-1/3 mb-4';
+        const wrapper = document.createElement("div");
+        wrapper.className = "relative w-full md:w-1/2 lg:w-1/3 mb-4    ";
 
-        const label = document.createElement('label');
-        label.className = 'block text-sm font-medium text-gray-700 mb-2';
+        const label = document.createElement("label");
+        label.className = "block text-sm font-medium text-gray-700 mb-2 ";
         label.htmlFor = `attribute_${attributeDetails._id}`;
         label.textContent = attributeDetails.name;
 
-        const select = document.createElement('select');
+        const select = document.createElement("select");
+        // select.className =
+        //   "absolute left-0 mt-2 px-12 py-8 text-sm rounded-8 text-gray-900 border border-gray-200 focus:ring-main-600 focus:border-main-600 w-full";
         select.className = 'absolute left-0 mt-2 px-12 py-8 text-sm rounded-8 text-gray-900 border border-gray-200 focus:ring-main-600 focus:border-main-600 w-full';
+        select.style.marginLeft = "5px";
         select.id = `attribute_${attributeDetails._id}`;
         select.name = attributeDetails.name;
 
-        const productAttributeValues = productAttr.attribute.attribute_values || [];
+        const productAttributeValues =
+          productAttr.attribute.attribute_values || [];
 
         if (attributeDetails.value && Array.isArray(attributeDetails.value)) {
           attributeDetails.value
-            .filter(val => productAttributeValues.includes(val._id))
-            .forEach(val => {
-              const option = document.createElement('option');
+            .filter((val) => productAttributeValues.includes(val._id))
+            .forEach((val) => {
+              const option = document.createElement("option");
               option.value = val.value;
               option.textContent = val.value;
               select.appendChild(option);
             });
         }
 
-        select.addEventListener('change', validateAndUpdateAttributes);
+        select.addEventListener("change", validateAndUpdateAttributes);
 
         wrapper.appendChild(label);
         wrapper.appendChild(select);
         attributesContainer.appendChild(wrapper);
-
       } catch (error) {
-        console.error(`Error setting up attribute ${productAttr.attribute._id}:`, error);
+        console.error(
+          `Error setting up attribute ${productAttr.attribute._id}:`,
+          error
+        );
       }
     }
 
@@ -170,38 +184,38 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-
   function setupColorSelection(colors) {
-    const colorSection = document.querySelector('.color-list');
+    const colorSection = document.querySelector(".color-list");
     if (!colorSection) return;
 
-    colorSection.innerHTML = '';
+    colorSection.innerHTML = "";
 
     if (colors.length === 1) {
       window.selectedColor = colors[0].name;
     }
 
-    colors.forEach(color => {
-      const colorButton = document.createElement('button');
-      colorButton.type = 'button';
-      colorButton.className = 'color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle';
+    colors.forEach((color) => {
+      const colorButton = document.createElement("button");
+      colorButton.type = "button";
+      colorButton.className =
+        "color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle";
       colorButton.style.backgroundColor = color.color_code;
       colorButton.title = color.name;
 
-      colorButton.addEventListener('click', () => {
-        document.querySelectorAll('.color-list__button').forEach(btn => {
-          btn.classList.remove('border-main-200');
-          btn.classList.add('border-gray-50');
+      colorButton.addEventListener("click", () => {
+        document.querySelectorAll(".color-list__button").forEach((btn) => {
+          btn.classList.remove("border-main-200");
+          btn.classList.add("border-gray-50");
         });
 
-        colorButton.classList.remove('border-gray-50');
-        colorButton.classList.add('border-main-200');
+        colorButton.classList.remove("border-gray-50");
+        colorButton.classList.add("border-main-200");
         window.selectedColor = color.name;
       });
 
       if (colors.length === 1) {
-        colorButton.classList.remove('border-gray-50');
-        colorButton.classList.add('border-main-200');
+        colorButton.classList.remove("border-gray-50");
+        colorButton.classList.add("border-main-200");
       }
 
       colorSection.appendChild(colorButton);
@@ -210,10 +224,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function validateAndUpdateAttributes() {
     const selectedAttributes = {};
-    const allSelects = document.querySelectorAll('.attribute-stng select');
+    const allSelects = document.querySelectorAll(".attribute-stng select");
     let valid = true;
 
-    allSelects.forEach(select => {
+    allSelects.forEach((select) => {
       if (!select.value) {
         valid = false;
         return;
@@ -224,27 +238,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
     return {
       valid: valid,
-      selectedAttributes
+      selectedAttributes,
     };
   }
-
 
   function setupQuantityHandlers() {
     const quantityInput = document.querySelector(".quantity__input");
     const minusBtn = document.querySelector(".quantity__minus");
     const plusBtn = document.querySelector(".quantity__plus");
-  
+
     if (!quantityInput || !minusBtn || !plusBtn) return;
-  
+
     // Remove any existing event listeners
     const newMinusBtn = minusBtn.cloneNode(true);
     const newPlusBtn = plusBtn.cloneNode(true);
     minusBtn.parentNode.replaceChild(newMinusBtn, minusBtn);
     plusBtn.parentNode.replaceChild(newPlusBtn, plusBtn);
-  
+
     // Set initial value
     quantityInput.value = 1;
-  
+
     // Add new event listeners
     newMinusBtn.addEventListener("click", () => {
       const currentValue = parseInt(quantityInput.value) || 1;
@@ -252,12 +265,12 @@ document.addEventListener("DOMContentLoaded", function () {
         quantityInput.value = currentValue - 1;
       }
     });
-  
+
     newPlusBtn.addEventListener("click", () => {
       const currentValue = parseInt(quantityInput.value) || 1;
       quantityInput.value = currentValue + 1;
     });
-  
+
     // Handle direct input changes
     quantityInput.addEventListener("change", () => {
       let value = parseInt(quantityInput.value) || 1;
@@ -267,49 +280,52 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateProductDetails(product) {
-
-    const addToCartBtn = document.querySelector('.add-to-cart-btn');
+    const addToCartBtn = document.querySelector(".add-to-cart-btn");
     if (addToCartBtn) {
-      const aedPricing = product.country_pricing.find(p => p.currency_code === "AED") || product.country_pricing[0];
+      const aedPricing =
+        product.country_pricing.find((p) => p.currency_code === "AED") ||
+        product.country_pricing[0];
 
       addToCartBtn.dataset.product = product._id;
-      addToCartBtn.dataset.productCurrencycode = aedPricing?.currency_code || 'AED';
-      addToCartBtn.dataset.productQuantity = '1';
-      addToCartBtn.dataset.productPrice = aedPricing?.unit_price || '';
-      addToCartBtn.dataset.productDiscount = aedPricing?.discount || '';
-      addToCartBtn.dataset.shippingPrice = aedPricing?.shipping_price || '';
-      addToCartBtn.dataset.taxAmount = aedPricing?.tax_amount || '';
-      addToCartBtn.dataset.shippingTime = aedPricing?.shipping_time || '';
+      addToCartBtn.dataset.productCurrencycode =
+        aedPricing?.currency_code || "AED";
+      addToCartBtn.dataset.productQuantity = "1";
+      addToCartBtn.dataset.productPrice = aedPricing?.unit_price || "";
+      addToCartBtn.dataset.productDiscount = aedPricing?.discount || "";
+      addToCartBtn.dataset.shippingPrice = aedPricing?.shipping_price || "";
+      addToCartBtn.dataset.taxAmount = aedPricing?.tax_amount || "";
+      addToCartBtn.dataset.shippingTime = aedPricing?.shipping_time || "";
 
       // Remove existing event listeners
       const newBtn = addToCartBtn.cloneNode(true);
       addToCartBtn.parentNode.replaceChild(newBtn, addToCartBtn);
 
       // Add new event listener
-      newBtn.addEventListener('click', async (e) => {
+      newBtn.addEventListener("click", async (e) => {
         e.preventDefault();
 
         // Get selected color
         const selectedColor = window.selectedColor;
         if (product.color?.length > 0 && !selectedColor) {
-          showAlert('error', 'Please select a color');
+          showAlert("error", "Please select a color");
           return;
         }
 
         // Validate attributes
         const { valid, selectedAttributes } = validateAndUpdateAttributes();
         if (!valid) {
-          showAlert('error', 'Please select all required attributes');
+          showAlert("error", "Please select all required attributes");
           return;
         }
 
         // Get quantity
-        const quantity = parseInt(document.querySelector('.quantity__input')?.value || '1');
-
+        const quantity = parseInt(
+          document.querySelector(".quantity__input")?.value || "1"
+        );
 
         const cartData = {
           product: product._id,
-          product_currency_code: aedPricing?.currency_code || 'AED',
+          product_currency_code: aedPricing?.currency_code || "AED",
           product_quantity: quantity,
           product_price: aedPricing?.unit_price,
           product_discount: aedPricing?.discount,
@@ -319,34 +335,37 @@ document.addEventListener("DOMContentLoaded", function () {
           attributes: {
             ...selectedAttributes,
             ...(selectedColor && {
-              color: selectedColor || ''
-            })
-          }
+              color: selectedColor || "",
+            }),
+          },
         };
 
         try {
-          const webtoken = localStorage.getItem('webtoken');
+          const webtoken = localStorage.getItem("webtoken");
           if (!webtoken) {
-            window.location.href = 'account.html';
+            window.location.href = "account.html";
             return;
           }
 
-          const response = await fetch('https://api.gamescorner.ae/api/web_cart', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${webtoken}`
-            },
-            body: JSON.stringify(cartData)
-          });
+          const response = await fetch(
+            "https://api.gamescorner.ae/api/web_cart",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${webtoken}`,
+              },
+              body: JSON.stringify(cartData),
+            }
+          );
 
           const data = await response.json();
           if (!response.ok) throw new Error(data.message);
 
-          showAlert('success', 'Product added to cart successfully!');
+          showAlert("success", "Product added to cart successfully!");
           updateCartCount();
         } catch (error) {
-          showAlert('error', error.message);
+          showAlert("error", error.message);
         }
       });
     }
@@ -373,9 +392,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const aedPricing =
       product.country_pricing.find((p) => p.currency_code === "AED") ||
       product.country_pricing[0];
-    const currentPrice = aedPricing ? aedPricing.discount : product.price;
+    const currentPrice = aedPricing ? (aedPricing.discount + aedPricing.tax_amount): product.price;
     const originalPrice = aedPricing
-      ? aedPricing.unit_price
+      ? (aedPricing.unit_price + aedPricing.tax_amount)
       : currentPrice * 1.5;
 
     const priceContainer = document.querySelector(
@@ -543,17 +562,21 @@ document.addEventListener("DOMContentLoaded", function () {
         product.country_pricing[0];
 
       let message = ` I'm interested in ${product.name}\n`;
-      message += `Price: AED ${aedPricing ? aedPricing.discount : product.price
-        }\n`;
+      message += `Price: AED ${
+        aedPricing ? aedPricing.discount : product.price
+      }\n`;
       message += `Quantity: ${quantity}\n`;
       message += `Description: ${stripHtmlTags(product.description)}\n`;
       message += `image: ${stripHtmlTags(product.image)}\n`;
-      message += `tax: AED ${aedPricing ? aedPricing.tax_amount : product.tax_amount
-        }\n`;
-      message += `Shipping Price: AED ${aedPricing ? aedPricing.shipping_time : product.shipping_price
-        }\n`;
-      message += `Shipping Time: ${aedPricing ? aedPricing.shipping_price : product.shipping_time
-        }\n`;
+      message += `tax: AED ${
+        aedPricing ? aedPricing.tax_amount : product.tax_amount
+      }\n`;
+      message += `Shipping Price: AED ${
+        aedPricing ? aedPricing.shipping_time : product.shipping_price
+      }\n`;
+      message += `Shipping Time: ${
+        aedPricing ? aedPricing.shipping_price : product.shipping_time
+      }\n`;
 
       const encodedMessage = encodeURIComponent(message)
         .replace(/%0A/g, "%0A")
@@ -623,7 +646,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-
   function updateProductSpecifications(product) {
     const getAttributeValue = (attrs) => {
       if (!attrs || !Array.isArray(attrs) || attrs.length === 0) {
@@ -685,17 +707,19 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       {
         label: "Shipping Price",
-        value: `AED ${aedPricing?.shipping_price || product.shipping_price || "N/A"
-          }`,
+        value: `AED ${
+          aedPricing?.shipping_price || product.shipping_price || "N/A"
+        }`,
       },
       {
         label: "Tax",
-        value: `${aedPricing?.tax_percentage
-          ? `${aedPricing.tax_percentage}%`
-          : product.tax_percentage
+        value: `${
+          aedPricing?.tax_percentage
+            ? `${aedPricing.tax_percentage}%`
+            : product.tax_percentage
             ? `${product.tax_percentage}%`
             : "N/A"
-          }`,
+        }`,
       },
     ];
 
@@ -722,7 +746,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const colorContainer = colorSection.querySelector(".color-list");
 
       if (colorLabelSpan) {
-        colorLabelSpan.textContent = product.color.map(c => c.name).join(", ");
+        colorLabelSpan.textContent = product.color
+          .map((c) => c.name)
+          .join(", ");
       }
 
       if (colorContainer) {
@@ -730,21 +756,22 @@ document.addEventListener("DOMContentLoaded", function () {
         product.color.forEach((color) => {
           const colorButton = document.createElement("button");
           colorButton.type = "button";
-          colorButton.className = "color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle";
+          colorButton.className =
+            "color-list__button w-20 h-20 border border-2 border-gray-50 rounded-circle";
           colorButton.style.backgroundColor = color.color_code || "#000000";
           colorButton.dataset.colorId = color._id;
           colorButton.dataset.colorName = color.name;
           colorButton.title = color.name;
 
           colorButton.addEventListener("click", () => {
-            colorContainer.querySelectorAll("button").forEach(btn => {
+            colorContainer.querySelectorAll("button").forEach((btn) => {
               btn.classList.remove("border-main-600");
             });
 
             colorButton.classList.add("border-main-600");
             window.selectedColor = {
               id: color._id,
-              name: color.name
+              name: color.name,
             };
           });
 
@@ -756,7 +783,6 @@ document.addEventListener("DOMContentLoaded", function () {
     } else if (colorSection) {
       colorSection.style.display = "none";
     }
-
   }
   async function fetchRelatedProducts(parentCategory) {
     try {
@@ -823,20 +849,22 @@ document.addEventListener("DOMContentLoaded", function () {
       const originalPrice = aedPricing
         ? aedPricing.discount
         : currentPrice * 1.5;
+        const Tax = aedPricing? aedPricing.tax_amount : "";
       // const currencyCode = aedPricing ? aedPricing.currency_code : "AED";
       // const shippingPrice = aedPricing ? aedPricing.shipping_price : " ";
       // const taxAmount = aedPricing ? aedPricing.tax_amount : " ";
       // const shippingTime = aedPricing ? aedPricing.shipping_time : " ";
       productCard.innerHTML = `
-                  <a href="product-details.html?id=${product._id
-        }" class="product-card__thumb flex-center">
-                      <img src="${product.image || "/assets/images/default-product.png"
-        }" alt="${product.name}">
+                  <a href="product-details.html?id=${product._id}" class="product-card__thumb flex-center">
+                      <img src="${
+                        product.image || "/assets/images/default-product.png"
+                      }" alt="${product.name}">
                   </a>
                   <div class="product-card__content p-sm-2">
                       <h6 class="title text-lg fw-semibold mt-12 mb-8">
-                          <a href="product-details.html?id=${product._id
-        }" class="link text-line-2">${product.name}</a>
+                          <a href="product-details.html?id=${
+                            product._id
+                          }" class="link text-line-2">${product.name}</a>
                       </h6>
                       <div class="flex-align gap-4">
                           <span class="text-main-600 text-md d-flex"><i class="ph-fill ph-storefront"></i></span>
@@ -844,16 +872,17 @@ document.addEventListener("DOMContentLoaded", function () {
                       </div>
                       <div class="product-card__content mt-12">
                           <div class="product-card__price mb-8">
-                            ${currentPrice
-          ? `<span class="text-gray-400 text-md fw-semibold text-decoration-line-through">AED ${currentPrice.toFixed(
-            2
-          )}</span>`
-          : ""
-        }
+                            ${
+                              currentPrice
+                                ? `<span class="text-gray-400 text-md fw-semibold text-decoration-line-through">AED ${(currentPrice + Tax).toFixed(
+                                    2
+                                  )}</span>`
+                                : ""
+                            }
                    </div>
-                     <span class="text-heading text-md fw-semibold">AED ${originalPrice.toFixed(
-          2
-        )} 
+                     <span class="text-heading text-md fw-semibold">AED ${(originalPrice + Tax).toFixed(
+                       2
+                     )} 
                     </div>
                   </div>
               `;
@@ -928,23 +957,26 @@ document.addEventListener("DOMContentLoaded", function () {
   fetchProductDetails();
 });
 
-
 function collectProductData(product) {
-  const quantity = parseInt(document.querySelector('.quantity__input')?.value || '1');
+  const quantity = parseInt(
+    document.querySelector(".quantity__input")?.value || "1"
+  );
   if (isNaN(quantity) || quantity < 1) {
-    showAlert('error', 'Please enter a valid quantity');
+    showAlert("error", "Please enter a valid quantity");
     return null;
   }
 
   const { valid, selectedAttributes } = validateAndUpdateAttributes();
   if (!valid) {
-    showAlert('error', 'Please select all required attributes');
+    showAlert("error", "Please select all required attributes");
     return null;
   }
 
-  const aedPricing = product.country_pricing?.find(p => p.currency_code === 'AED') || product.country_pricing?.[0];
+  const aedPricing =
+    product.country_pricing?.find((p) => p.currency_code === "AED") ||
+    product.country_pricing?.[0];
   if (!aedPricing) {
-    showAlert('error', 'Price information not available');
+    showAlert("error", "Price information not available");
     return null;
   }
 
@@ -960,42 +992,46 @@ function collectProductData(product) {
     attributes: {
       RAM: selectedAttributes.RAM || "",
       size: selectedAttributes.Size || "",
-      color: window.selectedColor || ""
-    }
+      color: window.selectedColor || "",
+    },
   };
 }
 
 function handleAddToCart(product) {
-  const webtoken = localStorage.getItem('webtoken');
+  const webtoken = localStorage.getItem("webtoken");
   if (!webtoken) {
-    showAlert('error', 'Please login first');
-    window.location.href = 'account.html';
+    showAlert("error", "Please login first");
+    window.location.href = "account.html";
     return;
   }
 
   // Get quantity
-  const quantity = parseInt(document.querySelector('.quantity__input')?.value || '1');
+  const quantity = parseInt(
+    document.querySelector(".quantity__input")?.value || "1"
+  );
   if (isNaN(quantity) || quantity < 1) {
-    showAlert('error', 'Please enter a valid quantity');
+    showAlert("error", "Please enter a valid quantity");
     return;
   }
 
   // Validate attributes
   const { valid, selectedAttributes } = validateAndUpdateAttributes();
   if (!valid) {
-    showAlert('error', 'Please select all required attributes');
+    showAlert("error", "Please select all required attributes");
     return;
   }
 
   // Check color selection if applicable
-  if (document.querySelector('.color-list') && !window.selectedColor) {
-    showAlert('error', 'Please select a color');
+  if (document.querySelector(".color-list") && !window.selectedColor) {
+    showAlert("error", "Please select a color");
     return;
   }
 
-  const aedPricing = product.country_pricing?.find(p => p.currency_code === 'AED') || product.country_pricing?.[0];
+  const aedPricing =
+    product.country_pricing?.find((p) => p.currency_code === "AED") ||
+    product.country_pricing?.[0];
   if (!aedPricing) {
-    showAlert('error', 'Price information not available');
+    showAlert("error", "Price information not available");
     return;
   }
 
@@ -1010,8 +1046,8 @@ function handleAddToCart(product) {
     shipping_time: aedPricing.shipping_time,
     attributes: {
       ...selectedAttributes,
-      color: window.selectedColor || ""
-    }
+      color: window.selectedColor || "",
+    },
   };
 
   // Save to localStorage for order now functionality
@@ -1021,58 +1057,61 @@ function handleAddToCart(product) {
     currency_code: "AED",
     attributes: {
       ...selectedAttributes,
-      color: window.selectedColor || ""
-    }
+      color: window.selectedColor || "",
+    },
   };
 
-  localStorage.setItem('orderData', JSON.stringify(orderData));
-  fetch('https://api.gamescorner.ae/api/web_cart', {
-    method: 'POST',
+  localStorage.setItem("orderData", JSON.stringify(orderData));
+  fetch("https://api.gamescorner.ae/api/web_cart", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${webtoken}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${webtoken}`,
     },
-    body: JSON.stringify(cartData)
+    body: JSON.stringify(cartData),
   })
-  .then(response => {
-    if (!response.ok) {
-      return response.json().then(errorData => {
-        throw new Error(errorData.message || 'Failed to add item to cart');
-      });
-    }
-    return response.json();
-  })
-  .then(data => {
-    showAlert('success', 'Product added to cart successfully!');
-    updateCartCount();
-  })
-  .catch(error => {
-    showAlert('error', error.message);
-    console.error('Error adding to cart:', error);
-  });
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((errorData) => {
+          throw new Error(errorData.message || "Failed to add item to cart");
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      showSuccess("success", "Product added to cart successfully!");
+      updateCartCount();
+    })
+    .catch((error) => {
+      showError("error", error.message);
+      console.error("Error adding to cart:", error);
+    });
 }
 
 function handleOrderNow(product) {
   const productData = collectProductData(product);
   if (!productData) return;
 
-  localStorage.setItem('orderData', JSON.stringify({
-    product_id: productData.product,
-    quantity: productData.product_quantity,
-    currency_code: productData.product_currency_code,
-    attributes: productData.attributes
-  }));
+  localStorage.setItem(
+    "orderData",
+    JSON.stringify({
+      product_id: productData.product,
+      quantity: productData.product_quantity,
+      currency_code: productData.product_currency_code,
+      attributes: productData.attributes,
+    })
+  );
 
-  window.location.href = 'order-checkout.html';
+  window.location.href = "order-checkout.html";
 }
 
 function showAlert(type, message) {
-  const alertDiv = document.createElement('div');
+  const alertDiv = document.createElement("div");
   alertDiv.className = `alert alert-danger position-fixed top-0 end-0 m-3`;
-  alertDiv.style.zIndex = '9999';
+  alertDiv.style.zIndex = "9999";
   alertDiv.innerHTML = `
       <div class="d-flex align-items-center">
-        <i class="ph ph-${type === 'success' ? 'check' : 'x'}-circle me-2"></i>
+        <i class="ph ph-${type === "success" ? "check" : "x"}-circle me-2"></i>
         <span>${message}</span>
       </div>
     `;
@@ -1082,7 +1121,9 @@ function showAlert(type, message) {
 
 async function fetchAttribute(attributeId) {
   try {
-    const response = await fetch(`https://api.gamescorner.ae/api/attributes/${attributeId}`);
+    const response = await fetch(
+      `https://api.gamescorner.ae/api/attributes/${attributeId}`
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to fetch attribute ${attributeId}`);
@@ -1110,17 +1151,15 @@ async function fetchProductAttributes(product) {
     if (attributeData) {
       return {
         attributeData,
-        productAttribute: productAttr
+        productAttribute: productAttr,
       };
     }
     return null;
   });
 
   const attributes = await Promise.all(attributePromises);
-  return attributes.filter(attr => attr !== null);
+  return attributes.filter((attr) => attr !== null);
 }
-
-
 
 function updateCartCount() {
   const webtoken = localStorage.getItem("webtoken");
@@ -1139,9 +1178,7 @@ function updateCartCount() {
       }
     })
     .catch((error) => console.error("Error updating cart count:", error));
-};
-
-
+}
 
 //WISH LIST ADDING
 function handleAddToWishlist(productOrEvent) {
@@ -1153,7 +1190,7 @@ function handleAddToWishlist(productOrEvent) {
   }
 
   let productId;
-  
+
   // Handle both event and direct product object scenarios
   if (productOrEvent && productOrEvent.preventDefault) {
     productOrEvent.preventDefault();
@@ -1220,7 +1257,6 @@ function handleAddToWishlist(productOrEvent) {
     });
 }
 
-
 function showSuccess(message) {
   const alert = document.createElement("div");
   alert.className = "alert alert-success position-fixed top-0 end-0 m-3";
@@ -1266,9 +1302,13 @@ function setupProductInteractions(product) {
   if (orderNowButton) {
     orderNowButton.addEventListener("click", () => handleOrderNow(product));
   }
-
+  if (!product) {
+    console.error("No product ID found in URL");
+    window.location.href = "shop.html";
+    return;
+  }
   const addToCartBtn = document.querySelector(".add-to-cart-btn");
   if (addToCartBtn) {
-    addToCartBtn.addEventListener("click", handleAddToCart); 
+    addToCartBtn.addEventListener("click", handleAddToCart);
   }
 }

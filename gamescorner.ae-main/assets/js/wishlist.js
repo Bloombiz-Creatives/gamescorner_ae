@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Render wishlist items to the table
   function renderWishlistItems(products) {
-    wishlistContainer.innerHTML = "";
+    // wishlistContainer.innerHTML = "";
 
     if (!Array.isArray(products) || products.length === 0) {
       wishlistContainer.innerHTML = `
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </td>
                 <td>${product.country_pricing[0].currency_code} ${
         typeof product.country_pricing[0].discount === "number"
-          ? product.country_pricing[0].discount.toFixed(2)
+          ?( product.country_pricing[0].discount + product.country_pricing[0].tax_amount ).toFixed(2)
           : "0.00"
       }</td>
             `;

@@ -9,7 +9,7 @@ class CartManager {
     this.applyCouponButton = document.querySelector(".btn.btn-main");
     this.updateCartButton = document.querySelector(".text-lg.text-gray-500");
 
-    this.baseApiUrl = "https://api.gamescorner.ae/api";
+    this.baseApiUrl = "http://127.0.0.1:5002/api";
     this.initialize();
   }
 
@@ -138,7 +138,7 @@ class CartManager {
   }
 
   // Apply coupon to the cart
- 
+
   async applyCoupon() {
     try {
       if (this.isCouponApplied) {
@@ -161,7 +161,9 @@ class CartManager {
         return;
       }
 
-      const currencyCodeElement = document.querySelector("[data-currency-code]");
+      const currencyCodeElement = document.querySelector(
+        "[data-currency-code]"
+      );
       const currency_code = currencyCodeElement?.dataset?.currencyCode || "AED";
 
       const response = await fetch(`${this.baseApiUrl}/cart_coupon_apply`, {
@@ -205,13 +207,14 @@ class CartManager {
 
       // Clear the coupon input field after application
       if (couponCodeInput) couponCodeInput.value = "";
-
     } catch (error) {
       console.error("Error applying coupon:", error);
-      this.showNotification("An error occurred while applying the coupon", "error");
+      this.showNotification(
+        "An error occurred while applying the coupon",
+        "error"
+      );
     }
   }
-
 
   updateUIAfterCoupon(data) {
     console.log("Update UI after coupon:", data);
@@ -228,8 +231,6 @@ class CartManager {
       finalPriceButton.textContent = `AED ${summary.data.summary.finalPrice}`;
       finalPriceButton.style.display = "block";
     }
-   
-   
 
     // Append to cart summary container
     const cartSummaryContainer = document.querySelector(
@@ -245,8 +246,6 @@ class CartManager {
     document.querySelector(".btn-main").addEventListener("click", () => {
       applyCoupon();
     });
-
-   
 
     // Store coupon data in localStorage for persistence
     localStorage.setItem(
@@ -528,7 +527,7 @@ class CartManager {
       if (!token) {
         throw new Error("User is not authenticated.");
       }
-  
+
       const response = await fetch(`${this.baseApiUrl}/web_cart`, {
         method: "GET",
         headers: {
@@ -536,14 +535,14 @@ class CartManager {
           "Content-Type": "application/json",
         },
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const data = await response.json();
       console.log("Cart data fetched successfully:", data);
-  
+
       // Render the cart and update UI
       if (data) {
         this.renderCart(data);
@@ -553,7 +552,7 @@ class CartManager {
         console.warn("Cart data is empty or undefined.");
         this.renderErrorState(new Error("No cart data found."));
       }
-  
+
       return data;
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -586,7 +585,6 @@ class CartManager {
               total + (item.product_discount || 0) * item.product_quantity,
             0
           );
-
 
     // Calculate tax safely
     const totalTax =
@@ -714,14 +712,14 @@ class CartManager {
         </td>
         <td>
           <div class="table-product d-flex align-items-center gap-24">
-            <a href="product-details.html?${
+            <a href="product-details.html?id=${
               product._id
             }" class="table-product__thumb border border-gray-100 rounded-8 flex-center">
               <img src="${product.image || ""}" alt="${product.name}">
             </a>
             <div class="table-product__content text-start">
               <h6 class="title text-lg fw-semibold mb-8">
-                <a href="product-details.html?${product._id}" 
+                <a href="product-details.html?id=${product._id}" 
                    data-product-id="${item._id}"
                    class="link text-line-2">${truncateText(
                      product.name || ""
@@ -732,7 +730,7 @@ class CartManager {
         </td>
         <td>
           <span class="text-lg h6 mb-0 fw-semibold">AED: ${
-            item.product_discount
+            (item.product_discount + item.tax_amount)
           }</span>
         </td>
         <td>
@@ -749,7 +747,7 @@ class CartManager {
                 </td>
                 <td>
                     <span class="text-lg h6 mb-0 fw-semibold">AED ${
-                      item.product_discount * item.product_quantity
+                     ( item.product_discount + item.tax_amount) * item.product_quantity
                     }</span>
                 </td>
             </tr>
@@ -783,7 +781,7 @@ class CartManager {
       this.cartTableBody.innerHTML = `
                 <tr>
                     <td colspan="5" class="text-center py-4 text-danger">
-                        <p class="mb-0">Error loading cart: ${error.message}</p>
+                        <p class="mb-0">Your Cart is Empty</p>
                     </td>
                 </tr>
             `;
