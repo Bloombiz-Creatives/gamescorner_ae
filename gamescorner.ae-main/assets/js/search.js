@@ -462,6 +462,7 @@ class ProductListing {
         const price = aedPricing?.unit_price || 'N/A';
         const discount = aedPricing?.discount || 'N/A';
         const currencyCode = aedPricing ? aedPricing.currency_code : 'N/A';
+        const tax_amount = aedPricing ? aedPricing.tax_amount : 'N/A';
 
 
         return `
@@ -477,8 +478,8 @@ class ProductListing {
                     <a href="product-details.html" class="link text-line-2">${product.name}</a>
                 </h6>
                 <div class="product-card__price my-20">
-                      <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">${currencyCode} ${price}</span>
-                      <span class="text-heading text-md fw-semibold ">${currencyCode} ${discount}<span
+                      <span class="text-gray-400 text-md fw-semibold text-decoration-line-through">${currencyCode} ${price + tax_amount}</span>
+                      <span class="text-heading text-md fw-semibold ">${currencyCode} ${discount + tax_amount}<span
                       class="text-gray-500 fw-normal"></span> </span>
                  </div>
                 

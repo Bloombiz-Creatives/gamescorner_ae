@@ -179,13 +179,17 @@ class OldProductsManager {
     const aedPricing = product.country_pricing?.find(p => p.currency_code === "AED");
     const price = aedPricing?.unit_price || "N/A";
     const discount = aedPricing?.discount || price;
+    const tax_amount = aedPricing.tax_amount || '';
+    
 
     const productWrapper = document.createElement("div");
     productWrapper.className = "col-xxl-2 col-lg-3 col-sm-4 col-62";
 
     productWrapper.innerHTML = `
       <div class="product-card px-8 py-16 border border-gray-100 hover-border-main-600 rounded-16 position-relative transition-2">
-        <img src="${imageUrl}" alt="${product.name}" class="w-auto">
+         <a href="product-details.html?id=${product._id}" class="product-card__thumb flex-center">
+          <img src="${imageUrl}" alt="${product.name || "Product"}" />
+        </a>
         <div class="product-card__content mt-16">
           <h6 class="title text-lg fw-semibold mt-12 mb-8">
             <a href="product-details.html?id=${product._id}" class="link text-line-2">${product.name}</a>
@@ -198,8 +202,8 @@ class OldProductsManager {
           </div>
           <div class="flex-between gap-8 mt-24 flex-wrap">
             <div class="product-card__price">
-              <span class="text-gray-400 text-md fw-semibold text-decoration-line-through d-block">AED ${price}</span>
-              <span class="text-heading text-md fw-semibold">AED ${discount}</span>
+              <span class="text-gray-400 text-md fw-semibold text-decoration-line-through d-block">AED ${price + tax_amount}</span>
+              <span class="text-heading text-md fw-semibold">AED ${discount + tax_amount}</span>
             </div>
             <button 
               class="product-card__cart btn btn-main py-11 px-24 rounded-pill flex-align gap-8"
@@ -251,6 +255,82 @@ class OldProductsManager {
     }
   }
 
+  // showAttributeModal(productId, attributes, productName) {
+  //   const product = this.products[productId];
+  //   if (!product) return;
+
+  //   const modalProductName = document.getElementById('modalProductName');
+  //   const modalProductImage = document.getElementById('modalProductImage');
+  //   const modalCurrentPrice = document.getElementById('modalCurrentPrice');
+  //   const modalOriginalPrice = document.getElementById('modalOriginalPrice');
+  //   const modalDiscount = document.getElementById('modalDiscount');
+  //   const container = document.getElementById('attributesContainer');
+
+  //   modalProductName.textContent = productName;
+  //   modalProductImage.src = product.image || "assets/images/thumbs/default.png";
+  //   modalProductImage.alt = productName;
+
+  //   const aedPricing = product.country_pricing?.find(p => p.currency_code === "AED") || product.country_pricing?.[0];
+  //   const currentPrice = aedPricing?.discount || aedPricing?.unit_price || 0;
+  //   const originalPrice = aedPricing?.unit_price || 0;
+  //   const discountPercentage = aedPricing?.discount ?
+  //     Math.round(((originalPrice - aedPricing.discount) / originalPrice) * 100) : 0;
+
+  //   modalCurrentPrice.textContent = currentPrice.toFixed(2);
+  //   modalOriginalPrice.textContent = discountPercentage > 0 ? originalPrice.toFixed(2) : '';
+  //   modalDiscount.textContent = discountPercentage > 0 ? `(${discountPercentage}% off)` : '';
+
+  //   container.innerHTML = "";
+  //   container.dataset.productId = productId;
+
+  //   (product.attributes || []).forEach(productAttr => {
+  //     const attribute = attributes.find(attr => attr._id === productAttr.attribute._id);
+  //     if (!attribute) return;
+
+  //     const wrapper = document.createElement("div");
+  //     wrapper.className = "mb-3";
+
+  //     wrapper.innerHTML = `
+  //       <div class="d-flex justify-content-between align-items-center mb-2">
+  //         <span class="fw-medium">${attribute.name}</span>
+  //         <span class="text-danger" id="${attribute.name}-error"></span>
+  //       </div>
+  //       <select class="form-select" name="${attribute.name}" required>
+  //         <option value="" disabled selected>Select ${attribute.name}</option>
+  //         ${attribute.value && Array.isArray(attribute.value) ?
+  //         attribute.value
+  //           .filter(val => productAttr.attribute.attribute_values.includes(val._id))
+  //           .map(val => `<option value="${val.value}">${val.value}</option>`)
+  //           .join('') : ''
+  //       }
+  //       </select>
+  //     `;
+
+  //     container.appendChild(wrapper);
+  //   });
+
+  //   if (product.color && !attributes.some(attr => attr.name.toLowerCase() === "color")) {
+  //     const wrapper = document.createElement("div");
+  //     wrapper.className = "mb-3";
+  //     wrapper.innerHTML = `
+  //       <div class="d-flex justify-content-between align-items-center mb-2">
+  //         <span class="fw-medium">Color</span>
+  //         <span class="text-danger" id="color-error"></span>
+  //       </div>
+  //       <select class="form-select" name="color" required>
+  //         <option value="" disabled selected>Select Color</option>
+  //         ${product.color.map(color => `
+  //           <option value="${color.name}" data-color="${color.color_code}">${color.name}</option>
+  //         `).join("")}
+  //       </select>
+  //     `;
+  //     container.appendChild(wrapper);
+  //   }
+
+  //   const modal = new bootstrap.Modal(document.getElementById('attributeModal'));
+  //   modal.show();
+  // }
+
   showAttributeModal(productId, attributes, productName) {
     const product = this.products[productId];
     if (!product) return;
@@ -280,52 +360,80 @@ class OldProductsManager {
     container.dataset.productId = productId;
 
     (product.attributes || []).forEach(productAttr => {
-      const attribute = attributes.find(attr => attr._id === productAttr.attribute._id);
-      if (!attribute) return;
+        const attribute = attributes.find(attr => attr._id === productAttr.attribute._id);
+        if (!attribute) return;
 
-      const wrapper = document.createElement("div");
-      wrapper.className = "mb-3";
+        // Filter available values
+        const availableValues = attribute.value && Array.isArray(attribute.value) ?
+            attribute.value.filter(val => productAttr.attribute.attribute_values.includes(val._id)) : [];
 
-      wrapper.innerHTML = `
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="fw-medium">${attribute.name}</span>
-          <span class="text-danger" id="${attribute.name}-error"></span>
-        </div>
-        <select class="form-select" name="${attribute.name}" required>
-          <option value="" disabled selected>Select ${attribute.name}</option>
-          ${attribute.value && Array.isArray(attribute.value) ?
-          attribute.value
-            .filter(val => productAttr.attribute.attribute_values.includes(val._id))
-            .map(val => `<option value="${val.value}">${val.value}</option>`)
-            .join('') : ''
+        // Only create attribute selector if there are values
+        if (availableValues.length > 0) {
+            const wrapper = document.createElement("div");
+            wrapper.className = "mb-3";
+
+            const header = document.createElement("div");
+            header.className = "d-flex justify-content-between align-items-center mb-2";
+            header.innerHTML = `
+                <span class="fw-medium">${attribute.name}</span>
+                <span class="text-danger" id="${attribute.name}-error"></span>
+            `;
+
+            const select = document.createElement("select");
+            select.className = "form-select";
+            select.name = attribute.name;
+            select.required = true;
+
+            // Add options and select first value by default
+            availableValues.forEach((val, index) => {
+                const option = document.createElement("option");
+                option.value = val.value;
+                option.textContent = val.value;
+                option.selected = index === 0; // Select first option by default
+                select.appendChild(option);
+            });
+
+            wrapper.appendChild(header);
+            wrapper.appendChild(select);
+            container.appendChild(wrapper);
         }
-        </select>
-      `;
-
-      container.appendChild(wrapper);
     });
 
-    if (product.color && !attributes.some(attr => attr.name.toLowerCase() === "color")) {
-      const wrapper = document.createElement("div");
-      wrapper.className = "mb-3";
-      wrapper.innerHTML = `
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <span class="fw-medium">Color</span>
-          <span class="text-danger" id="color-error"></span>
-        </div>
-        <select class="form-select" name="color" required>
-          <option value="" disabled selected>Select Color</option>
-          ${product.color.map(color => `
-            <option value="${color.name}" data-color="${color.color_code}">${color.name}</option>
-          `).join("")}
-        </select>
-      `;
-      container.appendChild(wrapper);
+    // Handle color attribute
+    if (product.color && Array.isArray(product.color) && product.color.length > 0) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "mb-3";
+
+        const header = document.createElement("div");
+        header.className = "d-flex justify-content-between align-items-center mb-2";
+        header.innerHTML = `
+            <span class="fw-medium">Color</span>
+            <span class="text-danger" id="color-error"></span>
+        `;
+
+        const select = document.createElement("select");
+        select.className = "form-select";
+        select.name = "color";
+        select.required = true;
+
+        // Add color options and select first color by default
+        product.color.forEach((color, index) => {
+            const option = document.createElement("option");
+            option.value = color.name;
+            option.textContent = color.name;
+            option.dataset.color = color.color_code;
+            option.selected = index === 0; // Select first color by default
+            select.appendChild(option);
+        });
+
+        wrapper.appendChild(header);
+        wrapper.appendChild(select);
+        container.appendChild(wrapper);
     }
 
     const modal = new bootstrap.Modal(document.getElementById('attributeModal'));
     modal.show();
-  }
+}
 
   async submitAttributeForm(event) {
     event.preventDefault();

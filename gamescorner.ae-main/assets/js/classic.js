@@ -96,7 +96,7 @@ class ClassicProductsManager {
                   <span class="text-heading text-md fw-semibold d-block">
                     ${
                       pricing
-                        ? `${pricing.currency_code} ${pricing.discount.toFixed(2)}`
+                        ? `${pricing.currency_code} ${(pricing.discount + pricing.tax_amount).toFixed(2)}`
                         : "N/A"
                     }
                   </span>

@@ -128,7 +128,7 @@ class TodaysDealsManager {
                 <span class="text-heading text-md fw-semibold d-block">
                   ${
                     pricing
-                      ? `${pricing.currency_code} ${pricing.discount.toFixed(
+                      ? `${pricing.currency_code} ${(pricing.discount + pricing.tax_amount).toFixed(
                           2
                         )}`
                       : "N/A"
